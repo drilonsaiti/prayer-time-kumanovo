@@ -25,8 +25,6 @@ const LayoutTime = styled.div`
         align-items: center;
         justify-content: center;
     }
-
-
 `
 
 const LayoutPrayerTime = styled.div`
@@ -47,9 +45,6 @@ const LayoutPrayerTime = styled.div`
 
 const Times = ({today}) => {
     const timingsToShow = ['Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-
-    const currentTimeStamp = new Date().getTime();
-    const nextPrayerFont = nextPrayer(today[0]?.timings);
 
     return (
         <>
