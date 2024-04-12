@@ -97,7 +97,7 @@ const Home = () => {
                 <Paragraph style={{alignSelf: 'center'}}
                            countDown>{timeCountDown === 0 ? timecounddow : timeCountDown}</Paragraph>
             </FlexGroup>
-            <FlexGroup>
+            <FlexGroup minHeight>
                 <FlexGroup type="row" style={{alignSelf: 'center'}}>
                     <p>{gregorianDate(today[0].date.gregorian)} </p>
                     <Separator/>

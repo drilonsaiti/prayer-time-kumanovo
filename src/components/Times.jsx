@@ -19,6 +19,13 @@ const LayoutTime = styled.div`
         justify-content: center;
     }
 
+    @media only screen and (max-width: 750px) {
+        width: 100%;
+        gap: 1.1rem;
+        align-items: center;
+        justify-content: center;
+    }
+
 
 `
 

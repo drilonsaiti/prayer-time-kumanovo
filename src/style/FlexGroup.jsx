@@ -15,6 +15,8 @@ const FlexGroup = styled.div`
                 align-items: center;
         justify-content: center;
             `}
+    
+    
 
     ${(props) =>
     props.header &&
@@ -22,6 +24,18 @@ const FlexGroup = styled.div`
                 @media only screen and (max-width: 450px) {
                     gap: 0;
                 }
+            `}
+
+    ${(props) =>
+            props.minHeight &&
+            css`
+                @media only screen and (max-width: 920px) {
+                    width: 100%;
+                }
+                @media only screen and (max-width: 750px) {
+                    width: 90%;
+                }
+                
             `}
 
     ${(props) =>
