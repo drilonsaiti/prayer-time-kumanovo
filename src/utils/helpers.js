@@ -196,20 +196,30 @@ function formatTimeDifference(difference) {
 }
 
 export const calculateTimeDifference = (timings) => {
-    const timingsToShow = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Sunset', 'Maghrib', 'Isha'];
+    const timingsToShow = ['Sunrise', 'Dhuhr', 'Asr', 'Sunset', 'Maghrib', 'Isha'];
     const currentTimeStamp = new Date().getTime();
     for (let i = 0; i < timingsToShow.length; i++) {
         const [hours, minutes] = timings[timingsToShow[i]].split(" ")[0].split(":")
         const date = new Date();
         date.setHours(hours);
         date.setMinutes(minutes);
-        date.setMinutes(date.getMinutes() - 24);
-        const prayerTimeStamp = date.getTime();
+
+        let prayerTimeStamp = date.getTime();
 
 
         const isNextPrayer = prayerTimeStamp > currentTimeStamp;
 
         if (isNextPrayer) {
+
+            if (timingsToShow[i] === 'Sunrise') {
+                const time = timings[timingsToShow[i]].split(" ")[0];
+                const [hours, minutes] = time.split(":").map(Number);
+                const date = new Date();
+                date.setHours(hours);
+                date.setMinutes(minutes);
+                date.setMinutes(date.getMinutes() - 24);
+                prayerTimeStamp = date.getTime();
+            }
             return formatTimeDifference(prayerTimeStamp - currentTimeStamp);
         } else if (timingsToShow[i] === 'Isha') {
             const [hours, minutes] = timings[timingsToShow[1]].split(" ")[0].split(":");
@@ -226,7 +236,6 @@ export const calculateTimeDifference = (timings) => {
             if (prayerTime < currentDate) {
                 prayerTime.setDate(prayerTime.getDate() + 1);
             }
-
 
             const prayerTimeStamp = prayerTime.getTime();
 
