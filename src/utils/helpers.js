@@ -2,6 +2,7 @@ import {format} from 'date-fns';
 import {BsCloudSun, BsMoonStars, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
 
 export const ICONS = {
+    'Fajr': BsSunrise,
     'Sunrise': BsSunrise,
     'Dhuhr': BsSun,
     'Asr': BsCloudSun,
@@ -52,7 +53,7 @@ const HIJRIMONTHS = {
 
 export const backgroundGradient = {
     'Fajr': 'linear-gradient(to bottom, #87CEEB, #4682B4)',
-    'Sunries': 'linear-gradient(to bottom, #87CEEB, #4682B4)',
+    'Sunrise': 'linear-gradient(to bottom, #87CEEB, #4682B4)',
     'Dhuhr': 'linear-gradient(to bottom, #90EE90, #228B22)',
     'Asr': 'linear-gradient(to bottom, #FFD700, #DAA520)',
     'Sunset': 'linear-gradient(to bottom, #FFA500, #FF6347)',
@@ -67,7 +68,7 @@ export const formatDate = (date) => {
 export const nextPrayer = (timings) => {
     const timingsToShow = ['Sunrise', 'Dhuhr', 'Asr', 'Sunset', 'Maghrib', 'Isha'];
     const currentTimeStamp = new Date().getTime();
-    let nextPrayer = null;
+    let nextPrayerCount = 0;
 
     for (let i = 0; i < timingsToShow.length; i++) {
         const [hours, minutes] = timings[timingsToShow[i]].split(" ")[0].split(":")
@@ -83,14 +84,40 @@ export const nextPrayer = (timings) => {
             return timingsToShow[i];
         }
     }
+    return timingsToShow[0];
+}
 
+export const nextPrayerIconColor = (timings, date) => {
+    const timingsToShow = ['Sunrise', 'Dhuhr', 'Asr', 'Sunset', 'Maghrib', 'Isha'];
+    const currentTimeStamp = new Date().getTime();
+    let nextPrayerCount = 0;
+
+    for (let i = 0; i < timingsToShow.length; i++) {
+        const [hours, minutes] = timings[timingsToShow[i]].split(" ")[0].split(":")
+        const date = new Date();
+        date.setHours(hours);
+        date.setMinutes(minutes);
+
+        const prayerTimeStamp = date.getTime();
+
+        const isNextPrayer = prayerTimeStamp > currentTimeStamp;
+
+        if (isNextPrayer) {
+            return timingsToShow[i];
+        }
+    }
+    if (new Date() > new Date(date.gregorian.date)) {
+        return timingsToShow[0];
+    } else {
+        return timingsToShow[timingsToShow.length - 1];
+    }
 
 }
 
 export const nextPrayerTime = (timings) => {
     const timingsToShow = ['Sunrise', 'Dhuhr', 'Asr', 'Sunset', 'Maghrib', 'Isha'];
     const currentTimeStamp = new Date().getTime();
-    let nextPrayer = null;
+    let nextPrayerCount = 0;
 
     for (let i = 0; i < timingsToShow.length; i++) {
         const [hours, minutes] = timings[timingsToShow[i]].split(" ")[0].split(":")
@@ -118,9 +145,23 @@ export const nextPrayerTime = (timings) => {
 
             }
             return timings[timingsToShow[i]].split(" ")[0];
+        } else {
+            const time = timings[timingsToShow[i]].split(" ")[0];
+            const [hours, minutes] = time.split(":").map(Number);
+            const date = new Date();
+            date.setHours(hours);
+            date.setMinutes(minutes);
+            date.setMinutes(date.getMinutes() - 24);
+
+
+            const adjustedTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+
+            return adjustedTime;
         }
     }
+
 }
+
 
 export const fajrTime = (timings) => {
 
@@ -157,19 +198,42 @@ function formatTimeDifference(difference) {
 export const calculateTimeDifference = (timings) => {
     const timingsToShow = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Sunset', 'Maghrib', 'Isha'];
     const currentTimeStamp = new Date().getTime();
-
     for (let i = 0; i < timingsToShow.length; i++) {
         const [hours, minutes] = timings[timingsToShow[i]].split(" ")[0].split(":")
         const date = new Date();
         date.setHours(hours);
         date.setMinutes(minutes);
-
+        date.setMinutes(date.getMinutes() - 24);
         const prayerTimeStamp = date.getTime();
+
 
         const isNextPrayer = prayerTimeStamp > currentTimeStamp;
 
         if (isNextPrayer) {
             return formatTimeDifference(prayerTimeStamp - currentTimeStamp);
+        } else if (timingsToShow[i] === 'Isha') {
+            const [hours, minutes] = timings[timingsToShow[1]].split(" ")[0].split(":");
+
+            const currentDate = new Date();
+            const currentTimeStamp = currentDate.getTime();
+
+
+            const prayerTime = new Date(currentDate);
+            prayerTime.setHours(hours);
+            prayerTime.setMinutes(minutes);
+
+
+            if (prayerTime < currentDate) {
+                prayerTime.setDate(prayerTime.getDate() + 1);
+            }
+
+
+            const prayerTimeStamp = prayerTime.getTime();
+
+
+            const timeDifferenceInMillis = prayerTimeStamp - currentTimeStamp;
+
+            return formatTimeDifference(timeDifferenceInMillis);
         }
     }
 }

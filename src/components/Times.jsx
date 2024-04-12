@@ -1,4 +1,4 @@
-import {fajrTime, ICONS, nextPrayer, PRAYERS} from "../utils/helpers.js";
+import {fajrTime, ICONS, PRAYERS} from "../utils/helpers.js";
 import styled from "styled-components";
 import {createElement} from "react";
 import Icon from "../style/Icon.jsx";

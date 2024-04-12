@@ -8,6 +8,7 @@ import {
     hijriDate,
     ICONS,
     nextPrayer,
+    nextPrayerIconColor,
     nextPrayerTime,
     PRAYERS
 } from "../utils/helpers.js";
@@ -64,8 +65,9 @@ const Home = () => {
     const today = data.filter(item => {
         const date = new Date();
         const formattedDate = formatDate(date);
-        return item.date.gregorian.date === formattedDate;
-    })
+
+        return item.date.gregorian.date > formattedDate;
+    }).slice(0, 1);
 
 
     const prayerTime = nextPrayer(today[0].timings)
@@ -76,12 +78,15 @@ const Home = () => {
         if (timeCountDown === 0) {
             setTimeCountDown(timecounddow)
         }
-        setTimeCountDown(calculateTimeDifference(today[0].timings))
+
+        setTimeCountDown(calculateTimeDifference(today[0].timings));
+
     }, 30000);
 
 
+
     return (
-        <Layout backgroundColor={backgroundGradient[prayerTime]}>
+        <Layout backgroundColor={backgroundGradient[nextPrayerIconColor(today[0].timings, today[0].date)]}>
             <Location>
                 <Icon>
                     <HiOutlineLocationMarker/>
@@ -89,7 +94,7 @@ const Home = () => {
                 <Paragraph>Kumanovë</Paragraph>
             </Location>
             <Icon bigIcon>
-                {createElement(ICONS[prayerTime])}
+                {createElement(ICONS[nextPrayerIconColor(today[0].timings, today[0].date)])}
             </Icon>
             <FlexGroup>
                 <Paragraph
