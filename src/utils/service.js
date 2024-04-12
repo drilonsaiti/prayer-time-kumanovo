@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const URL = 'http://api.aladhan.com/v1/calendarByCity/';
+export const URL = 'https://api.aladhan.com/v1/calendarByCity/';
 export const PARAMS = {
     city: "Kumanovo",
     country: "North Macedonia",
