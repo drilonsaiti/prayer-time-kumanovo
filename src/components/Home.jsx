@@ -19,6 +19,7 @@ import {HiOutlineLocationMarker} from "react-icons/hi";
 import Icon from "../style/Icon.jsx";
 import Separator from "../style/Seperator.jsx";
 import FlexGroup from "../style/FlexGroup.jsx";
+import Spinner from "../style/Spinner.jsx";
 
 const Layout = styled.div`
     height: 100dvh;
@@ -60,7 +61,7 @@ const Home = () => {
     const [timeCountDown, setTimeCountDown] = useState(0);
 
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <Spinner />;
 
     const today = data.filter(item => {
         const date = new Date();
@@ -93,6 +94,7 @@ const Home = () => {
                 </Icon>
                 <Paragraph>Kumanovë</Paragraph>
             </Location>
+
             <Icon bigIcon>
                 {createElement(ICONS[nextPrayerIconColor(today[0].timings, today[0].date)])}
             </Icon>
