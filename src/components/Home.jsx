@@ -71,14 +71,12 @@ const Home = () => {
     const prayerTime = nextPrayer(today[0].timings)
     let timecounddow = calculateTimeDifference(today[0].timings);
 
-    console.log(today[0].date.hijri.month.en)
 
     setInterval(() => {
         if (timeCountDown === 0) {
             setTimeCountDown(timecounddow)
         }
         setTimeCountDown(calculateTimeDifference(today[0].timings))
-        console.log(timecounddow);
     }, 30000);
 
 

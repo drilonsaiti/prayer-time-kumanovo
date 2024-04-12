@@ -49,7 +49,6 @@ const Times = ({today}) => {
             {today?.map((item, index) => (
                 <LayoutTime key={index}>
                     {timingsToShow.map(key => {
-                        console.log(item.timings[key]);
                         return (
                             <LayoutPrayerTime key={key}>
                                 {PRAYERS[key]}
