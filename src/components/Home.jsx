@@ -66,14 +66,15 @@ const Home = () => {
     const today = data.filter(item => {
         const date = new Date();
         const formattedDate = formatDate(date);
-        /*const isha = convertStringToDate(item.timings['Isha']);*/
+        const isha = convertStringToDate(item.date.gregorian.date,item.timings['Isha']);
 
-        return item.date.gregorian.date >= formattedDate;
-    }).slice(0, 1);
-
+        return item.date.gregorian.date >= formattedDate && (new Date(isha) > new Date(date));
+    }).slice(0,1);
 
     const prayerTime = nextPrayer(today[0].timings)
     let timecounddow = calculateTimeDifference(today[0].timings);
+
+    localStorage.setItem('prev',prayerTime);
 
 
     setInterval(() => {
@@ -83,14 +84,14 @@ const Home = () => {
 
         setTimeCountDown(calculateTimeDifference(today[0].timings));
 
-        if(timeCountDown.includes("s")){
+        const now = new Date();
+        if(timeCountDown.includes("s") || ( now.getHours() === 0 && now.getMinutes() === 1) || localStorage.getItem('prev') !== prayerTime){
             window.location.reload();
         }
 
     }, 30000);
 
 
-    console.log(today);
     return (
         <Layout backgroundColor={backgroundGradient[nextPrayerIconColor(today[0].timings, today[0].date)]}>
             <Location>

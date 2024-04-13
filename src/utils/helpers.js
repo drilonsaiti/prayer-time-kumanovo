@@ -144,35 +144,35 @@ export const nextPrayerTime = (timings) => {
                 return adjustedTime;
 
             }
+            console.log("ITS HERE");
             return timings[timingsToShow[i]].split(" ")[0];
         } else {
             nextPrayerCount++;
         }
 
-        if (nextPrayerCount === 6){
-            const time = timings[timingsToShow[i]].split(" ")[0];
-            const [hours, minutes] = time.split(":").map(Number);
-            const date = new Date();
-            date.setHours(hours);
-            date.setMinutes(minutes);
-            date.setMinutes(date.getMinutes() - 24);
+
+    }
+    if (nextPrayerCount === timingsToShow.length){
+        const time = timings[timingsToShow[0]].split(" ")[0];
+        const [hours, minutes] = time.split(":").map(Number);
+        const date = new Date();
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        date.setMinutes(date.getMinutes() - 24);
 
 
-            const adjustedTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+        const adjustedTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 
-            return adjustedTime;
-        }
+        return adjustedTime;
     }
 
 }
-
-export const convertStringToDate = (time) =>{
+export const convertStringToDate = (date,time) =>{
     const [hours, minutes] = time.split(" ")[0].split(":").map(Number);
-    const date = new Date();
-    date.setHours(hours);
-    date.setMinutes(minutes);
+    const [day,month,year] = date.split("-")
 
-    return date;
+    return  new Date(year, month - 1, day, hours, minutes);
+
 }
 
 
@@ -183,8 +183,8 @@ export const fajrTime = (timings) => {
     date.setHours(hours);
     date.setMinutes(minutes);
     date.setMinutes(date.getMinutes() - 24);
-    const adjustedTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-    return adjustedTime;
+    return  `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+
 }
 
 function formatTimeDifference(difference) {
@@ -233,9 +233,10 @@ export const calculateTimeDifference = (timings) => {
                 date.setMinutes(date.getMinutes() - 24);
                 prayerTimeStamp = date.getTime();
             }
+
             return formatTimeDifference(prayerTimeStamp - currentTimeStamp);
         } else if (timingsToShow[i] === 'Isha') {
-            const [hours, minutes] = timings[timingsToShow[1]].split(" ")[0].split(":");
+            const [hours, minutes] = timings[timingsToShow[0]].split(" ")[0].split(":");
 
             const currentDate = new Date();
             const currentTimeStamp = currentDate.getTime();
@@ -254,8 +255,9 @@ export const calculateTimeDifference = (timings) => {
 
 
             const timeDifferenceInMillis = prayerTimeStamp - currentTimeStamp;
-
+            console.log("ITS HERE");
             return formatTimeDifference(timeDifferenceInMillis);
+
         }
     }
 }
