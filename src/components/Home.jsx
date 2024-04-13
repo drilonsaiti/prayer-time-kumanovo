@@ -83,6 +83,10 @@ const Home = () => {
 
         setTimeCountDown(calculateTimeDifference(today[0].timings));
 
+        if(timeCountDown.includes("s")){
+            window.location.reload();
+        }
+
     }, 30000);
 
 
