@@ -152,7 +152,7 @@ export const nextPrayerTime = (timings) => {
 
 
     }
-    if (nextPrayerCount === timingsToShow.length){
+    if (nextPrayerCount === timingsToShow.length) {
         const time = timings[timingsToShow[0]].split(" ")[0];
         const [hours, minutes] = time.split(":").map(Number);
         const date = new Date();
@@ -167,11 +167,11 @@ export const nextPrayerTime = (timings) => {
     }
 
 }
-export const convertStringToDate = (date,time) =>{
+export const convertStringToDate = (date, time) => {
     const [hours, minutes] = time.split(" ")[0].split(":").map(Number);
-    const [day,month,year] = date.split("-")
+    const [day, month, year] = date.split("-")
 
-    return  new Date(year, month - 1, day, hours, minutes);
+    return new Date(year, month - 1, day, hours, minutes);
 
 }
 
@@ -183,7 +183,7 @@ export const fajrTime = (timings) => {
     date.setHours(hours);
     date.setMinutes(minutes);
     date.setMinutes(date.getMinutes() - 24);
-    return  `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 
 }
 
