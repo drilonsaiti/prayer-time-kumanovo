@@ -146,6 +146,10 @@ export const nextPrayerTime = (timings) => {
             }
             return timings[timingsToShow[i]].split(" ")[0];
         } else {
+            nextPrayerCount++;
+        }
+
+        if (nextPrayerCount === 6){
             const time = timings[timingsToShow[i]].split(" ")[0];
             const [hours, minutes] = time.split(":").map(Number);
             const date = new Date();
@@ -160,6 +164,15 @@ export const nextPrayerTime = (timings) => {
         }
     }
 
+}
+
+export const convertStringToDate = (time) =>{
+    const [hours, minutes] = time.split(" ")[0].split(":").map(Number);
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+
+    return date;
 }
 
 

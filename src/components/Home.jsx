@@ -2,7 +2,7 @@ import {createElement, useState} from 'react';
 import {usePrayersTime} from "./usePrayersTime.js";
 import {
     backgroundGradient,
-    calculateTimeDifference,
+    calculateTimeDifference, convertStringToDate,
     formatDate,
     gregorianDate,
     hijriDate,
@@ -66,8 +66,9 @@ const Home = () => {
     const today = data.filter(item => {
         const date = new Date();
         const formattedDate = formatDate(date);
+        /*const isha = convertStringToDate(item.timings['Isha']);*/
 
-        return item.date.gregorian.date > formattedDate;
+        return item.date.gregorian.date >= formattedDate;
     }).slice(0, 1);
 
 
@@ -85,7 +86,7 @@ const Home = () => {
     }, 30000);
 
 
-
+    console.log(today);
     return (
         <Layout backgroundColor={backgroundGradient[nextPrayerIconColor(today[0].timings, today[0].date)]}>
             <Location>
