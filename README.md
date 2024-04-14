@@ -1,8 +1,28 @@
-# React + Vite
+# Prayer Time
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+Prayer Time is a web application designed to display prayer times for Muslims in Kumanovo, North Macedonia. It provides accurate prayer timings and countdowns to the next prayer throughout the day.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+* Prayer Time Display: Show the 5 daily prayer times according to the Islamic calendar.
+* Next Prayer Highlight: Highlight the next upcoming prayer for quick reference.
+* Countdown Timer: Display a countdown timer to the next prayer time, updating dynamically.
+
+## Technology 
+React JS
+
+## Setup
+Clone the repository.
+Install dependencies: npm install.
+Configure Supabase credentials.
+Run the application: npm run dev.
+
+## Usage
+### Once the application is running, users can:
+
+* View the current prayer times and the countdown to the next prayer.
+* Refresh the page to get updated prayer timings if needed.
+
+## Contributors
+* ### [Drilon Saiti](https://drilonsaiti.github.io/)
