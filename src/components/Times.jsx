@@ -25,6 +25,11 @@ const LayoutTime = styled.div`
         align-items: center;
         justify-content: center;
     }
+
+    @media only screen and (max-width: 360px) {
+        gap: 1rem;
+        width: 98%;
+    }
 `
 
 const LayoutPrayerTime = styled.div`

@@ -31,7 +31,7 @@ const FlexGroup = styled.div`
                 @media only screen and (max-width: 920px) {
                     width: 100%;
                 }
-                @media only screen and (max-width: 750px) {
+                @media only screen and (max-width: 400px) {
                     width: 90%;
                 }
 
