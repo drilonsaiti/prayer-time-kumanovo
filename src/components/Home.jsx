@@ -11,16 +11,17 @@ import {
     nextPrayer,
     nextPrayerIconColor,
     nextPrayerTime,
-    PRAYERS
+    PRAYERS, WEATHER, WEATHER_ICONS
 } from "../utils/helpers.js";
 import Times from "./Times.jsx";
 import styled, {css} from "styled-components";
 
-import {HiOutlineLocationMarker} from "react-icons/hi";
+import {HiOutlineLocationMarker, HiRefresh} from "react-icons/hi";
 import Icon from "../style/Icon.jsx";
 import Separator from "../style/Seperator.jsx";
 import FlexGroup from "../style/FlexGroup.jsx";
 import Spinner from "../style/Spinner.jsx";
+import {useWeather} from "./useWeather.js";
 
 const Layout = styled.div`
     height: 100dvh;
@@ -49,20 +50,27 @@ const Paragraph = styled.p`
 
     font-size: 2.5rem;
 
-
+    
     ${(props) =>
             props.countDown &&
             css`
                 font-size: 8rem;
             `}
+
+    ${(props) =>
+            props.weather &&
+            css`
+                font-size: 1.4rem;
+            `}
 `
 
 const Home = () => {
     const {data, isLoading} = usePrayersTime();
+    const {data:weather,isLoading:isLoadingWeather} = useWeather();
     const [timeCountDown, setTimeCountDown] = useState(0);
 
 
-    if (isLoading) return <Spinner/>;
+    if (isLoading || isLoadingWeather) return <Spinner/>;
 
     const today = data.filter(item => {
         const date = new Date();
@@ -96,10 +104,33 @@ const Home = () => {
     return (
         <Layout backgroundColor={backgroundGradient[nextPrayerIconColor(today[0].timings, today[0].date)]}>
             <Location>
-                <Icon>
-                    <HiOutlineLocationMarker/>
-                </Icon>
-                <Paragraph>Kumanovë</Paragraph>
+                <FlexGroup type="row">
+                    <FlexGroup type="row">
+                        <Icon>
+                            <HiOutlineLocationMarker/>
+                        </Icon>
+                        <Paragraph>Kumanovë</Paragraph>
+                    </FlexGroup>
+                    {weather && <>
+                        <Separator/>
+                        <FlexGroup type="row">
+                            <Icon weatherIcon>
+                                {createElement(WEATHER_ICONS[weather?.data.values.weatherCode])}
+                            </Icon>
+                            <FlexGroup weather>
+                                <Paragraph>
+                                    {`${Math.round(weather?.data.values.temperature)}°`}
+                                </Paragraph>
+                                <Paragraph weather>
+                                    {WEATHER[weather?.data.values.weatherCode]}
+                                </Paragraph>
+                                <Icon smallIcon onClick={() => window.location.reload()}>
+                                    <HiRefresh />
+                                </Icon>
+                            </FlexGroup>
+                        </FlexGroup>
+                    </>}
+                </FlexGroup>
             </Location>
 
             <Icon bigIcon>

@@ -1,6 +1,6 @@
 import {format} from 'date-fns';
 import {BsCloudSun, BsMoonStars, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
-
+import { WiDaySunny, WiCloud, WiCloudy, WiFog, WiDayFog, WiRain, WiSnow, WiSleet, WiStormShowers, WiThunderstorm } from 'react-icons/wi';
 export const ICONS = {
     'Fajr': BsSunrise,
     'Sunrise': BsSunrise,
@@ -10,6 +10,60 @@ export const ICONS = {
     'Maghrib': BsSunset,
     'Isha': BsMoonStars,
 };
+export const WEATHER_ICONS = {
+    0: WiCloud , // Unknown
+    1000: WiDaySunny , // Clear, Sunny
+    1100: WiDaySunny , // Mostly Clear
+    1101: WiCloud , // Partly Cloudy
+    1102: WiCloudy , // Mostly Cloudy
+    1001: WiCloudy , // Cloudy
+    2000: WiFog , // Fog
+    2100: WiDayFog , // Light Fog
+    4000: WiRain , // Drizzle
+    4001: WiRain , // Rain
+    4200: WiRain , // Light Rain
+    4201: WiRain , // Heavy Rain
+    5000: WiSnow , // Snow
+    5001: WiSnow , // Flurries
+    5100: WiSnow , // Light Snow
+    5101: WiSnow , // Heavy Snow
+    6000: WiSleet , // Freezing Drizzle
+    6001: WiSleet , // Freezing Rain
+    6200: WiSleet , // Light Freezing Rain
+    6201: WiSleet , // Heavy Freezing Rain
+    7000: WiSleet , // Ice Pellets
+    7101: WiSleet , // Heavy Ice Pellets
+    7102: WiSleet , // Light Ice Pellets
+    8000: WiThunderstorm  // Thunderstorm
+};
+
+
+export const WEATHER = {
+    0: "Unknown",
+    1000: "Clear, Sunny",
+    1100: "Mostly Clear",
+    1101: "Partly Cloudy",
+    1102: "Mostly Cloudy",
+    1001: "Cloudy",
+    2000: "Fog",
+    2100: "Light Fog",
+    4000: "Drizzle",
+    4001: "Rain",
+    4200: "Light Rain",
+    4201: "Heavy Rain",
+    5000: "Snow",
+    5001: "Flurries",
+    5100: "Light Snow",
+    5101: "Heavy Snow",
+    6000: "Freezing Drizzle",
+    6001: "Freezing Rain",
+    6200: "Light Freezing Rain",
+    6201: "Heavy Freezing Rain",
+    7000: "Ice Pellets",
+    7101: "Heavy Ice Pellets",
+    7102: "Light Ice Pellets",
+    8000: "Thunderstorm"
+}
 
 export const PRAYERS = {
     'Fajr': 'Sabahu',

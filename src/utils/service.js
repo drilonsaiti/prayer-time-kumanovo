@@ -24,3 +24,24 @@ export const apiRequest = async () => {
         throw new Error(error.response.data);
     }
 };
+
+export const apiRequestWeather = async () => {
+    const URL_WEATHER = 'https://api.tomorrow.io/v4/weather/realtime';
+    const PARAMS = {
+        location: "kumanovo",
+        apikey: import.meta.env.VITE_WEATHER_API_KEY
+
+    }
+    try {
+        const config = {
+            method: "GET",
+            url: `${URL_WEATHER}`,
+            params: {...PARAMS}
+        };
+        console.log(config);
+        return await axios(config);
+    } catch (error) {
+        console.error(error.response.data);
+        throw new Error(error.response.data);
+    }
+}

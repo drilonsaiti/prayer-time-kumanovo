@@ -7,6 +7,13 @@ const FlexGroup = styled.div`
     text-align: left;
     gap: 1rem;
 
+    ${(props) =>
+            props.weather &&
+            css`
+                align-items: center;
+                justify-content: center;
+                gap: 0;
+            `}
 
     ${(props) =>
     props.type === "row" &&
