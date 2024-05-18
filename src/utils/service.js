@@ -38,7 +38,6 @@ export const apiRequestWeather = async () => {
             url: `${URL_WEATHER}`,
             params: {...PARAMS}
         };
-        console.log(config);
         return await axios(config);
     } catch (error) {
         console.error(error.response.data);

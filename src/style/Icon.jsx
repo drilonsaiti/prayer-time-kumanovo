@@ -9,8 +9,8 @@ const Icon = styled.svg`
 
     
     ${(props) =>
-            props.smallIcon &&
-            css`
+    props.smallIcon &&
+    css`
                 width: 1.5rem;
                 height: 1.5rem;
                 font-size: 1.5rem;
@@ -24,8 +24,8 @@ const Icon = styled.svg`
             `}
 
     ${(props) =>
-            props.weatherIcon &&
-            css`
+    props.weatherIcon &&
+    css`
                 width: 5.5rem;
                 height: 5.5rem;
                 font-size: 5.5rem;

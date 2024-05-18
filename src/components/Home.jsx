@@ -11,7 +11,9 @@ import {
     nextPrayer,
     nextPrayerIconColor,
     nextPrayerTime,
-    PRAYERS, WEATHER, WEATHER_ICONS
+    PRAYERS,
+    WEATHER,
+    WEATHER_ICONS
 } from "../utils/helpers.js";
 import Times from "./Times.jsx";
 import styled, {css} from "styled-components";
@@ -50,7 +52,7 @@ const Paragraph = styled.p`
 
     font-size: 2.5rem;
 
-    
+
     ${(props) =>
             props.countDown &&
             css`
@@ -66,7 +68,7 @@ const Paragraph = styled.p`
 
 const Home = () => {
     const {data, isLoading} = usePrayersTime();
-    const {data:weather,isLoading:isLoadingWeather} = useWeather();
+    const {data: weather, isLoading: isLoadingWeather} = useWeather();
     const [timeCountDown, setTimeCountDown] = useState(0);
 
 
@@ -100,7 +102,6 @@ const Home = () => {
 
     }, 30000);
 
-
     return (
         <Layout backgroundColor={backgroundGradient[nextPrayerIconColor(today[0].timings, today[0].date)]}>
             <Location>
@@ -125,7 +126,7 @@ const Home = () => {
                                     {WEATHER[weather?.data.values.weatherCode]}
                                 </Paragraph>
                                 <Icon smallIcon onClick={() => window.location.reload()}>
-                                    <HiRefresh />
+                                    <HiRefresh/>
                                 </Icon>
                             </FlexGroup>
                         </FlexGroup>

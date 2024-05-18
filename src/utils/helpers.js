@@ -1,6 +1,7 @@
 import {format} from 'date-fns';
 import {BsCloudSun, BsMoonStars, BsSun, BsSunrise, BsSunset} from "react-icons/bs";
-import { WiDaySunny, WiCloud, WiCloudy, WiFog, WiDayFog, WiRain, WiSnow, WiSleet, WiStormShowers, WiThunderstorm } from 'react-icons/wi';
+import {WiCloud, WiCloudy, WiDayFog, WiDaySunny, WiFog, WiRain, WiSleet, WiSnow, WiThunderstorm} from 'react-icons/wi';
+
 export const ICONS = {
     'Fajr': BsSunrise,
     'Sunrise': BsSunrise,
@@ -11,29 +12,29 @@ export const ICONS = {
     'Isha': BsMoonStars,
 };
 export const WEATHER_ICONS = {
-    0: WiCloud , // Unknown
-    1000: WiDaySunny , // Clear, Sunny
-    1100: WiDaySunny , // Mostly Clear
-    1101: WiCloud , // Partly Cloudy
-    1102: WiCloudy , // Mostly Cloudy
-    1001: WiCloudy , // Cloudy
-    2000: WiFog , // Fog
-    2100: WiDayFog , // Light Fog
-    4000: WiRain , // Drizzle
-    4001: WiRain , // Rain
-    4200: WiRain , // Light Rain
-    4201: WiRain , // Heavy Rain
-    5000: WiSnow , // Snow
-    5001: WiSnow , // Flurries
-    5100: WiSnow , // Light Snow
-    5101: WiSnow , // Heavy Snow
-    6000: WiSleet , // Freezing Drizzle
-    6001: WiSleet , // Freezing Rain
-    6200: WiSleet , // Light Freezing Rain
-    6201: WiSleet , // Heavy Freezing Rain
-    7000: WiSleet , // Ice Pellets
-    7101: WiSleet , // Heavy Ice Pellets
-    7102: WiSleet , // Light Ice Pellets
+    0: WiCloud, // Unknown
+    1000: WiDaySunny, // Clear, Sunny
+    1100: WiDaySunny, // Mostly Clear
+    1101: WiCloud, // Partly Cloudy
+    1102: WiCloudy, // Mostly Cloudy
+    1001: WiCloudy, // Cloudy
+    2000: WiFog, // Fog
+    2100: WiDayFog, // Light Fog
+    4000: WiRain, // Drizzle
+    4001: WiRain, // Rain
+    4200: WiRain, // Light Rain
+    4201: WiRain, // Heavy Rain
+    5000: WiSnow, // Snow
+    5001: WiSnow, // Flurries
+    5100: WiSnow, // Light Snow
+    5101: WiSnow, // Heavy Snow
+    6000: WiSleet, // Freezing Drizzle
+    6001: WiSleet, // Freezing Rain
+    6200: WiSleet, // Light Freezing Rain
+    6201: WiSleet, // Heavy Freezing Rain
+    7000: WiSleet, // Ice Pellets
+    7101: WiSleet, // Heavy Ice Pellets
+    7102: WiSleet, // Light Ice Pellets
     8000: WiThunderstorm  // Thunderstorm
 };
 
@@ -101,7 +102,7 @@ const HIJRIMONTHS = {
     "Sh\u02BF\u0101b\u0101n": "Shaban ",
     "Ram\u1E0D\u0101n": "Ramazan",
     "Shaww\u0101l": "Shevval",
-    "Dh\u016B al-Q\u02BF\u0061dah": "Dhul Kaa’de",
+    "Dh\u016B al-Qa\u02BFdah": "Dhul Kaa’de",
     "Dh\u016B al-\u1E24\u0069\u006A\u006A\u0061\u0068": "Dhul Hixhe "
 };
 
@@ -198,7 +199,6 @@ export const nextPrayerTime = (timings) => {
                 return adjustedTime;
 
             }
-            console.log("ITS HERE");
             return timings[timingsToShow[i]].split(" ")[0];
         } else {
             nextPrayerCount++;
@@ -309,7 +309,7 @@ export const calculateTimeDifference = (timings) => {
 
 
             const timeDifferenceInMillis = prayerTimeStamp - currentTimeStamp;
-            console.log("ITS HERE");
+
             return formatTimeDifference(timeDifferenceInMillis);
 
         }
@@ -319,6 +319,16 @@ export const calculateTimeDifference = (timings) => {
 export const gregorianDate = (gregorian) => {
 
     return `${gregorian.day} ${MONTHS[gregorian.month.en]}`
+}
+
+function toUnicode(str) {
+    return str.split('').map(function (value, index, array) {
+        var temp = value.charCodeAt(0).toString(16).toUpperCase();
+        if (temp.length > 2) {
+            return '\\u' + ('0000' + temp).slice(-4); // Ensure four hexadecimal digits
+        }
+        return value;
+    }).join('');
 }
 
 export const hijriDate = (hijri) => {

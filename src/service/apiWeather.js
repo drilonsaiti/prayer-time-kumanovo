@@ -1,4 +1,4 @@
-import { apiRequestWeather} from "../utils/service.js";
+import {apiRequestWeather} from "../utils/service.js";
 
 export async function getWeather() {
     try {
