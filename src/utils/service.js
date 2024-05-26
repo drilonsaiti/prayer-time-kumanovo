@@ -19,7 +19,6 @@ export const apiRequest = async (city) => {
         country: "North Macedonia",
         method: 13
     }
-    console.log("CITY api", city)
     try {
         const config = {
             method: "GET",

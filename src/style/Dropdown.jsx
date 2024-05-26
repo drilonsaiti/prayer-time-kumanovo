@@ -25,6 +25,7 @@ const StyledDropdownMenu = styled.div`
 
 const StyledDropdownItem = styled.div`
     font-size: 2.5rem;
+    color: #fff;
     padding: 1rem;
     padding-right: 2rem;
 

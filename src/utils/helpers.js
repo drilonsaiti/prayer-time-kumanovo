@@ -392,6 +392,5 @@ export const getUserLocation = () => {
             console.error(error);
         });
 
-    console.log("FUCN2:", getCity);
     return {getCity, getCountry};
 }

@@ -84,15 +84,18 @@ const Home = () => {
     useEffect(() => {
         const storageCity = localStorage.getItem("city");
         if (address?.country === "North Macedonia") {
-            if (!storageCity || storageCity !== address?.city) {
+            if (!storageCity ) {
                 setCity(cities[address?.city])
-            } else {
-                setCity(cities[storageCity])
+                localStorage.setItem("city", cities[address?.city])
+            } else if (storageCity !== address?.city){
+                setCity(cities[address?.city])
+            }else{
+                setCity(cities[storageCity]);
             }
         } else {
-            setCity("Kumanovë")
+            setCity("Tetovë")
         }
-    }, [address?.city, address?.country,setCity]);
+    }, [address?.city, address?.country]);
 
 
     const {data, isLoading} = usePrayersTime(city);
@@ -102,7 +105,7 @@ const Home = () => {
 
     if (isLoading || isLoadingWeather || isLoadingLocation) return <Spinner/>;
 
-    const today = data.filter(item => {
+    const today = data?.filter(item => {
         const date = new Date();
         const formattedDate = formatDate(date);
         const isha = convertStringToDate(item.date.gregorian.date, item.timings['Isha']);

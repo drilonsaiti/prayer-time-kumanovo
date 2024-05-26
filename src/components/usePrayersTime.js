@@ -3,7 +3,6 @@ import {getPrayersTime} from "../service/apiPrayersTime.js";
 
 export function usePrayersTime(city) {
 
-    console.log("CITY IN USE", city)
     const {
         isLoading,
         data,
