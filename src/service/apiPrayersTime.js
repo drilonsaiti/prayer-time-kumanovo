@@ -1,8 +1,8 @@
 import {apiRequest} from "../utils/service.js";
 
-export async function getPrayersTime() {
+export async function getPrayersTime(city) {
     try {
-        const response = await apiRequest();
+        const response = await apiRequest(city);
         return response.data.data;
 
     } catch (err) {

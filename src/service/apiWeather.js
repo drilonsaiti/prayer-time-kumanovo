@@ -1,8 +1,8 @@
 import {apiRequestWeather} from "../utils/service.js";
 
-export async function getWeather() {
+export async function getWeather(city) {
     try {
-        const response = await apiRequestWeather();
+        const response = await apiRequestWeather(city);
         return response.data;
 
     } catch (err) {

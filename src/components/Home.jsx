@@ -1,4 +1,4 @@
-import {createElement, useState} from 'react';
+import {createElement, useEffect, useRef, useState} from 'react';
 import {usePrayersTime} from "./usePrayersTime.js";
 import {
     backgroundGradient,
@@ -24,6 +24,9 @@ import Separator from "../style/Seperator.jsx";
 import FlexGroup from "../style/FlexGroup.jsx";
 import Spinner from "../style/Spinner.jsx";
 import {useWeather} from "./useWeather.js";
+import {HiChevronDown, HiChevronUp} from "react-icons/hi2";
+import Dropdown from "../style/Dropdown.jsx";
+import {useLocation} from "./useLocation.js";
 
 const Layout = styled.div`
     height: 100dvh;
@@ -66,13 +69,38 @@ const Paragraph = styled.p`
             `}
 `
 
+const cities = {
+    "Kumanovo": "Kumanovë",
+    "Tetovo": "Tetovë"
+}
+
 const Home = () => {
-    const {data, isLoading} = usePrayersTime();
-    const {data: weather, isLoading: isLoadingWeather} = useWeather();
+    const [city, setCity] = useState("Kumanovë");
+    const [isCity, setIsCity] = useState(false);
+    //const {getCity,getCountry} = getUserLocation();
+    const {address, isLoading: isLoadingLocation} = useLocation();
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        const storageCity = localStorage.getItem("city");
+        if (address?.country === "North Macedonia") {
+            if (!storageCity || storageCity !== address?.city) {
+                setCity(cities[address?.city])
+            } else {
+                setCity(cities[storageCity])
+            }
+        } else {
+            setCity("Kumanovë")
+        }
+    }, [address?.city, address?.country,setCity]);
+
+
+    const {data, isLoading} = usePrayersTime(city);
+    const {data: weather, isLoading: isLoadingWeather} = useWeather(city);
     const [timeCountDown, setTimeCountDown] = useState(0);
 
 
-    if (isLoading || isLoadingWeather) return <Spinner/>;
+    if (isLoading || isLoadingWeather || isLoadingLocation) return <Spinner/>;
 
     const today = data.filter(item => {
         const date = new Date();
@@ -102,15 +130,37 @@ const Home = () => {
 
     }, 30000);
 
+    const handleCity = () => {
+        setIsCity(!isCity)
+    }
+    const handleSelectCity = (selectedCity) => {
+        setCity(selectedCity);
+        setIsCity(false);
+    };
+
+    const handleIsOpenDropdown = () => {
+        setIsCity(!isCity)
+    }
+
+    const backgroundColor = backgroundGradient[nextPrayerIconColor(today[0].timings, today[0].date)];
+
     return (
-        <Layout backgroundColor={backgroundGradient[nextPrayerIconColor(today[0].timings, today[0].date)]}>
+        <Layout style={{backgroundColor: 'black'}} backgroundColor={backgroundColor}>
             <Location>
                 <FlexGroup type="row">
                     <FlexGroup type="row">
                         <Icon>
                             <HiOutlineLocationMarker/>
                         </Icon>
-                        <Paragraph>Kumanovë</Paragraph>
+                        <FlexGroup>
+                            <FlexGroup type="row" onClick={handleCity} style={{cursor: 'pointer'}}>
+                                <Paragraph>{city}</Paragraph>
+                                {isCity ? <HiChevronUp/> : <HiChevronDown/>}
+                            </FlexGroup>
+                            {isCity && <Dropdown onSelectCity={handleSelectCity} onOpenDropdown={handleIsOpenDropdown}
+                                                 backgroundColor={backgroundColor}/>}
+                        </FlexGroup>
+
                     </FlexGroup>
                     {weather && <>
                         <Separator/>

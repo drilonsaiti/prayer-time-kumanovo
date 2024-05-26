@@ -335,3 +335,63 @@ export const hijriDate = (hijri) => {
 
     return `${hijri.day} ${HIJRIMONTHS[hijri.month.en]}`
 }
+
+const findLocationUser = () => {
+    return new Promise((resolve, reject) => {
+        let city = "";
+        let country = "";
+        if ("geolocation" in navigator) {
+            // Get the user's current position
+            navigator.geolocation.getCurrentPosition(async function (position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+                const data = await response.json();
+
+                if (data.address) {
+                    city = data.address.city || data.address.town || data.address.village;
+                    country = data.address.country;
+
+                    resolve({userCity: city, country});
+                } else {
+                    reject("Error: Could not find address details for the given coordinates.");
+                }
+            }, function (error) {
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        reject("User denied the request for Geolocation.");
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        reject("Location information is unavailable.");
+                        break;
+                    case error.TIMEOUT:
+                        reject("The request to get user location timed out.");
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        reject("An unknown error occurred.");
+                        break;
+                }
+            });
+        } else {
+            reject("Geolocation is not supported by this browser.");
+        }
+    });
+};
+
+export const getUserLocation = () => {
+    let getCity = "";
+    let getCountry = "";
+
+    findLocationUser()
+        .then(({userCity, country}) => {
+            getCity = userCity;
+            getCountry = country
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    console.log("FUCN2:", getCity);
+    return {getCity, getCountry};
+}
