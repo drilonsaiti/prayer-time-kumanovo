@@ -103,7 +103,7 @@ const Home = () => {
     const [timeCountDown, setTimeCountDown] = useState(0);
 
 
-    if (isLoading || isLoadingWeather || isLoadingLocation) return <Spinner/>;
+    if (isLoading || isLoadingLocation) return <Spinner/>;
 
     const today = data?.filter(item => {
         const date = new Date();
