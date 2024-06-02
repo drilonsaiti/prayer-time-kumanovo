@@ -37,7 +37,7 @@ export const apiRequestWeather = async (city) => {
     const URL_WEATHER = 'https://api.tomorrow.io/v4/weather/realtime';
     const location = cities[city].toLocaleString().toLocaleLowerCase()
     const PARAMS = {
-        location: location,
+        location: location.toString(),
         apikey: import.meta.env.VITE_WEATHER_API_KEY
 
     }
