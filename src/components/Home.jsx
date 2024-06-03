@@ -93,7 +93,7 @@ const Home = () => {
                 setCity(cities[storageCity]);
             }
         } else {
-            setCity("Tetovë")
+            setCity("Kumanovë")
         }
     }, [address?.city, address?.country]);
 
