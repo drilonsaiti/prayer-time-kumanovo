@@ -99,7 +99,7 @@ const Home = () => {
 
 
     const {data, isLoading} = usePrayersTime(city);
-    const {data: weather, isLoading: isLoadingWeather} = useWeather(city);
+    //const {data: weather, isLoading: isLoadingWeather} = useWeather(city);
     const [timeCountDown, setTimeCountDown] = useState(0);
 
 
@@ -165,7 +165,7 @@ const Home = () => {
                         </FlexGroup>
 
                     </FlexGroup>
-                    {weather && <>
+                   {/* {weather && <>
                         <Separator/>
                         <FlexGroup type="row">
                             <Icon weatherIcon>
@@ -183,7 +183,7 @@ const Home = () => {
                                 </Icon>
                             </FlexGroup>
                         </FlexGroup>
-                    </>}
+                    </>}*/}
                 </FlexGroup>
             </Location>
 
