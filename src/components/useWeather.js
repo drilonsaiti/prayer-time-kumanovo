@@ -7,8 +7,8 @@ export function useWeather(city) {
         data,
         error,
     } = useQuery({
-        queryKey: ["weather",city],
-        queryFn:() => getWeather(city),
+        queryKey: ["weather", city],
+        queryFn: () => getWeather(city),
     });
 
     return {isLoading, error, data};

@@ -11,19 +11,16 @@ import {
     nextPrayer,
     nextPrayerIconColor,
     nextPrayerTime,
-    PRAYERS,
-    WEATHER,
-    WEATHER_ICONS
+    PRAYERS
 } from "../utils/helpers.js";
 import Times from "./Times.jsx";
 import styled, {css} from "styled-components";
 
-import {HiOutlineLocationMarker, HiRefresh} from "react-icons/hi";
+import {HiOutlineLocationMarker} from "react-icons/hi";
 import Icon from "../style/Icon.jsx";
 import Separator from "../style/Seperator.jsx";
 import FlexGroup from "../style/FlexGroup.jsx";
 import Spinner from "../style/Spinner.jsx";
-import {useWeather} from "./useWeather.js";
 import {HiChevronDown, HiChevronUp} from "react-icons/hi2";
 import Dropdown from "../style/Dropdown.jsx";
 import {useLocation} from "./useLocation.js";
@@ -84,12 +81,12 @@ const Home = () => {
     useEffect(() => {
         const storageCity = localStorage.getItem("city");
         if (address?.country === "North Macedonia") {
-            if (!storageCity ) {
+            if (!storageCity) {
                 setCity(cities[address?.city])
                 localStorage.setItem("city", cities[address?.city])
-            } else if (storageCity !== address?.city){
+            } else if (storageCity !== address?.city) {
                 setCity(cities[address?.city])
-            }else{
+            } else {
                 setCity(cities[storageCity]);
             }
         } else {
@@ -103,7 +100,7 @@ const Home = () => {
     const [timeCountDown, setTimeCountDown] = useState(0);
 
 
-    if (isLoading || isLoadingLocation) return <Spinner/>;
+    if (isLoading) return <Spinner/>;
 
     const today = data?.filter(item => {
         const date = new Date();
@@ -165,7 +162,7 @@ const Home = () => {
                         </FlexGroup>
 
                     </FlexGroup>
-                   {/* {weather && <>
+                    {/* {weather && <>
                         <Separator/>
                         <FlexGroup type="row">
                             <Icon weatherIcon>

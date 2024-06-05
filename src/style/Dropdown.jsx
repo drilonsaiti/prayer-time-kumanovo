@@ -11,8 +11,8 @@ const StyledDropdown = styled.div`
     box-shadow: 0 10px 12px rgba(0, 0, 0, 0.3);;
 
     ${(props) =>
-            props.backgroundColor &&
-            css`
+    props.backgroundColor &&
+    css`
                 background-image: ${props.backgroundColor} !important;
             `}
 `

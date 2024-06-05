@@ -6,13 +6,12 @@ export async function getLocation() {
             navigator.geolocation.getCurrentPosition(function (position) {
                 const latitude = position.coords.latitude;
                 const longitude = position.coords.longitude;
-                console.log(latitude, longitude);
                 resolve({latitude, longitude});
             }, function () {
                 reject("Geolocation is not supported!");
             });
         } else {
-            resolve({latitude:42.13222,longitude:21.71444})
+            resolve({latitude: 42.13222, longitude: 21.71444})
             reject("Geolocation is not supported!");
         }
     }).then(async ({latitude, longitude}) => {
