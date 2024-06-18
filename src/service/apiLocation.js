@@ -8,11 +8,10 @@ export async function getLocation() {
                 const longitude = position.coords.longitude;
                 resolve({latitude, longitude});
             }, function () {
-                reject("Geolocation is not supported!");
+                resolve({latitude: 42.13222, longitude: 21.71444})
             });
         } else {
             resolve({latitude: 42.13222, longitude: 21.71444})
-            reject("Geolocation is not supported!");
         }
     }).then(async ({latitude, longitude}) => {
         try {
@@ -23,10 +22,8 @@ export async function getLocation() {
             return response.data.address;
         } catch (err) {
             console.error(err);
-            throw new Error(err);
         }
     }).catch(error => {
         console.error(error);
-        throw new Error(error);
     });
 }
