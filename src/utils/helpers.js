@@ -333,7 +333,16 @@ function toUnicode(str) {
 
 export const hijriDate = (hijri) => {
 
-    return `${hijri.day} ${HIJRIMONTHS[hijri.month.en]}`
+    const hijriMonth = hijri.month.en;
+
+    const mapMonthName = (monthName) => {
+        const normalizedMonth = monthName.replace(/ū/g, "\u016B");
+        return HIJRIMONTHS[normalizedMonth];
+    };
+
+    const monthName = mapMonthName(hijriMonth);
+
+    return `${hijri.day} ${monthName || hijriMonth}`;
 }
 
 const findLocationUser = () => {

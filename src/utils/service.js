@@ -10,7 +10,16 @@ export const YEAR = new Date().getFullYear();
 export const MONTH = new Date().getMonth() + 1;
 const cities = {
     "Kumanovë": "Kumanovo",
-    "Tetovë": "Tetovo"
+    "Tetovë": "Tetovo",
+    "Strugë": "Struga",
+    "Shkup": "Skopje",
+    "Gostivar": "Gostivar",
+    "Prilep": "Prilep",
+    "Kërçovë": "Kičevo",
+    "Debar": "Debar",
+    "Veles": "Veles",
+    "Kičevo": "Kičevo",
+    "Strumicë": "Strumica"
 }
 
 export const apiRequest = async (city) => {

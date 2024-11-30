@@ -68,8 +68,17 @@ const Paragraph = styled.p`
 
 const cities = {
     "Kumanovo": "Kumanovë",
-    "Tetovo": "Tetovë"
+    "Skopje": "Shkup",
+    "Tetovo": "Tetovë",
+    "Struga": "Strugë",
+    "Gostivar": "Gostivar",
+    "Prilep": "Prilep",
+    "Kičevo": "Kërçovë",
+    "Debar": "Debar",
+    "Veles": "Veles",
+    "Strumica": "Strumicë"
 }
+
 
 const Home = () => {
     const [city, setCity] = useState("Kumanovë");
@@ -107,7 +116,7 @@ const Home = () => {
         const formattedDate = formatDate(date);
         const isha = convertStringToDate(item.date.gregorian.date, item.timings['Isha']);
 
-        return item.date.gregorian.date >= formattedDate && (new Date(isha) > new Date(date));
+        return item.date.gregorian.date >= formattedDate;
     }).slice(0, 1);
 
     const prayerTime = nextPrayer(today[0].timings)
