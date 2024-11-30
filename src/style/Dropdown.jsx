@@ -68,9 +68,8 @@ const Dropdown = ({onSelectCity, isCity, setIsCity, onOpenDropdown, backgroundCo
         { name: "Gostivar" },
         { name: "Prilep" },
         { name: "Kërçovë" },
-        { name: "Debar" },
+        { name: "Dibër" },
         { name: "Veles" },
-        { name: "Strumicë" }
     ]
     return (
         <StyledDropdown ref={dropdownRef} backgroundColor={backgroundColor}>

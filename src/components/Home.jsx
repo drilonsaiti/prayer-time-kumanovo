@@ -74,7 +74,7 @@ const cities = {
     "Gostivar": "Gostivar",
     "Prilep": "Prilep",
     "Kičevo": "Kërçovë",
-    "Debar": "Debar",
+    "Debar": "Dibër",
     "Veles": "Veles",
     "Strumica": "Strumicë"
 }
