@@ -41,7 +41,6 @@ const Layout = styled.div`
 `;
 
 const Location = styled.div`
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -49,9 +48,7 @@ const Location = styled.div`
 `
 
 const Paragraph = styled.p`
-
     font-size: 2.5rem;
-
 
     ${(props) =>
             props.countDown &&
@@ -79,13 +76,12 @@ const cities = {
     "Strumica": "Strumicë"
 }
 
-
 const Home = () => {
     const [city, setCity] = useState("Kumanovë");
     const [isCity, setIsCity] = useState(false);
-    //const {getCity,getCountry} = getUserLocation();
     const {address, isLoading: isLoadingLocation} = useLocation();
     const dropdownRef = useRef(null);
+    const [timeCountDown, setTimeCountDown] = useState("");
 
     useEffect(() => {
         const storageCity = localStorage.getItem("city");
@@ -103,48 +99,69 @@ const Home = () => {
         }
     }, [address?.city, address?.country]);
 
+    const {data, isLoading, error} = usePrayersTime(city);
 
-    const {data, isLoading} = usePrayersTime(city);
-    //const {data: weather, isLoading: isLoadingWeather} = useWeather(city);
-    const [timeCountDown, setTimeCountDown] = useState(0);
+    // Update countdown every 30 seconds
+    useEffect(() => {
+        if (!data || !data[0]) return;
 
+        const updateCountdown = () => {
+            const newCountdown = calculateTimeDifference(data[0].timings);
+            setTimeCountDown(newCountdown);
 
+            const now = new Date();
+            const prayerTime = nextPrayer(data[0].timings);
+            const prevPrayer = localStorage.getItem('prev');
+
+            // Reload if countdown shows seconds OR it's just past midnight OR prayer changed
+            if (newCountdown.includes("s") ||
+                (now.getHours() === 0 && now.getMinutes() <= 1) ||
+                prevPrayer !== prayerTime) {
+                window.location.reload();
+            }
+        };
+
+        // Initial update
+        updateCountdown();
+
+        // Set up interval
+        const interval = setInterval(updateCountdown, 30000);
+
+        return () => clearInterval(interval);
+    }, [data]);
+
+    // Show loading spinner
     if (isLoading) return <Spinner/>;
 
-    const today = data?.filter(item => {
-        const date = new Date();
-        const formattedDate = formatDate(date);
-        const isha = convertStringToDate(item.date.gregorian.date, item.timings['Isha']);
+    // Show error if data fetch failed
+    if (error) {
+        return (
+            <Layout style={{backgroundColor: 'black'}}>
+                <Paragraph>Error loading prayer times. Please refresh.</Paragraph>
+            </Layout>
+        );
+    }
 
-        return item.date.gregorian.date >= formattedDate;
-    }).slice(0, 1);
+    // Wait for data to be available
+    if (!data || !data[0]) {
+        return <Spinner/>;
+    }
 
-    const prayerTime = nextPrayer(today[0].timings)
-    let timecounddow = calculateTimeDifference(today[0].timings);
+    const today = data;
+    const prayerTime = nextPrayer(today[0].timings);
+    const timecountdown = timeCountDown || calculateTimeDifference(today[0].timings);
 
+    // Store current prayer for comparison
     localStorage.setItem('prev', prayerTime);
-
-
-    setInterval(() => {
-        if (timeCountDown === 0) {
-            setTimeCountDown(timecounddow)
-        }
-
-        setTimeCountDown(calculateTimeDifference(today[0].timings));
-
-        const now = new Date();
-        if (timeCountDown.includes("s") || (now.getHours() === 0 && now.getMinutes() === 1) || localStorage.getItem('prev') !== prayerTime) {
-            window.location.reload();
-        }
-
-    }, 30000);
 
     const handleCity = () => {
         setIsCity(!isCity)
     }
+
     const handleSelectCity = (selectedCity) => {
         setCity(selectedCity);
         setIsCity(false);
+        localStorage.setItem("city", selectedCity);
     };
 
     const handleIsOpenDropdown = () => {
@@ -166,42 +183,29 @@ const Home = () => {
                                 <Paragraph>{city}</Paragraph>
                                 {isCity ? <HiChevronUp/> : <HiChevronDown/>}
                             </FlexGroup>
-                            {isCity && <Dropdown onSelectCity={handleSelectCity} onOpenDropdown={handleIsOpenDropdown}
-                                                 backgroundColor={backgroundColor}/>}
+                            {isCity && <Dropdown
+                                onSelectCity={handleSelectCity}
+                                onOpenDropdown={handleIsOpenDropdown}
+                                backgroundColor={backgroundColor}
+                            />}
                         </FlexGroup>
-
                     </FlexGroup>
-                    {/* {weather && <>
-                        <Separator/>
-                        <FlexGroup type="row">
-                            <Icon weatherIcon>
-                                {createElement(WEATHER_ICONS[weather?.data.values.weatherCode])}
-                            </Icon>
-                            <FlexGroup weather>
-                                <Paragraph>
-                                    {`${Math.round(weather?.data.values.temperature)}°`}
-                                </Paragraph>
-                                <Paragraph weather>
-                                    {WEATHER[weather?.data.values.weatherCode]}
-                                </Paragraph>
-                                <Icon smallIcon onClick={() => window.location.reload()}>
-                                    <HiRefresh/>
-                                </Icon>
-                            </FlexGroup>
-                        </FlexGroup>
-                    </>}*/}
                 </FlexGroup>
             </Location>
 
             <Icon bigIcon>
                 {createElement(ICONS[nextPrayerIconColor(today[0].timings, today[0].date)])}
             </Icon>
+
             <FlexGroup>
-                <Paragraph
-                    style={{alignSelf: 'center'}}>{PRAYERS[prayerTime]} {nextPrayerTime(today[0].timings)}</Paragraph>
-                <Paragraph style={{alignSelf: 'center'}}
-                           countDown>{timeCountDown === 0 ? timecounddow : timeCountDown}</Paragraph>
+                <Paragraph style={{alignSelf: 'center'}}>
+                    {PRAYERS[prayerTime]} {nextPrayerTime(today[0].timings)}
+                </Paragraph>
+                <Paragraph style={{alignSelf: 'center'}} countDown>
+                    {timecountdown}
+                </Paragraph>
             </FlexGroup>
+
             <FlexGroup minHeight>
                 <FlexGroup type="row" style={{alignSelf: 'center'}}>
                     <p>{gregorianDate(today[0].date.gregorian)} </p>
@@ -214,7 +218,6 @@ const Home = () => {
             <Paragraph style={{fontSize: '1.5rem'}}>
                 Created by Drilon Saiti
             </Paragraph>
-
         </Layout>
     );
 };
