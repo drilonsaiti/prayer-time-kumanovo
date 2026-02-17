@@ -43,27 +43,17 @@ function isCacheValid() {
     return true;
 }
 
-function adjustTime(timeString, offsetMinutes) {
-    if (offsetMinutes === 0) return timeString;
+function adjustTime(timeString, offsetMinutes = 0) {
+    const [time, period] = timeString.trim().split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
 
-    const [time, period] = timeString.split(' ');
-    const [hours, minutes] = time.split(':').map(Number);
-
-    let hour24 = hours;
-    if (period === 'PM' && hours !== 12) hour24 += 12;
-    if (period === 'AM' && hours === 12) hour24 = 0;
+    if (period === 'PM' && hours !== 12) hours += 12;
+    if (period === 'AM' && hours === 12) hours = 0;
 
     const date = new Date();
-    date.setHours(hour24, minutes + offsetMinutes, 0, 0);
+    date.setHours(hours, minutes + offsetMinutes, 0, 0);
 
-    let newHours = date.getHours();
-    const newMinutes = date.getMinutes();
-    const newPeriod = newHours >= 12 ? 'PM' : 'AM';
-
-    if (newHours > 12) newHours -= 12;
-    if (newHours === 0) newHours = 12;
-
-    return `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')} ${newPeriod}`;
+    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 }
 
 async function scrapePrayerTimes() {
@@ -95,11 +85,11 @@ async function scrapePrayerTimes() {
             return null;
         };
 
-        prayerTimes.Fajr = extractTime('Sabahu');
-        prayerTimes.Dhuhr = extractTime('Dreka');
-        prayerTimes.Asr = extractTime('Iqindia');
+        prayerTimes.Fajr    = extractTime('Sabahu');
+        prayerTimes.Dhuhr   = extractTime('Dreka');
+        prayerTimes.Asr     = extractTime('Iqindia');
         prayerTimes.Maghrib = extractTime('Akshami');
-        prayerTimes.Isha = extractTime('Jacia');
+        prayerTimes.Isha    = extractTime('Jacia');
 
         const missing = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].filter(p => !prayerTimes[p]);
         if (missing.length > 0) {
@@ -110,14 +100,10 @@ async function scrapePrayerTimes() {
         cache.timestamp = Date.now();
         cache.date = new Date().toDateString();
 
-        console.log('Prayer times cached until midnight');
-
         return prayerTimes;
 
     } catch (error) {
-        if (cache.data) {
-            return cache.data;
-        }
+        if (cache.data) return cache.data;
         throw error;
     }
 }
@@ -133,18 +119,18 @@ module.exports = async (req, res) => {
 
     try {
         const city = req.query.city || 'Shkup';
-
         const baseTimes = await scrapePrayerTimes();
-
         const offset = CITY_OFFSETS[city] || 0;
-        const adjusted = {};
 
-        Object.keys(baseTimes).forEach(prayer => {
-            adjusted[prayer] = adjustTime(baseTimes[prayer], offset);
-        });
-
-        adjusted.Sunrise = adjustTime(adjusted.Fajr, 24);
-        adjusted.Sunset = adjusted.Maghrib;
+        const adjusted = {
+            Fajr:    adjustTime(baseTimes.Fajr,    offset),
+            Sunrise: adjustTime(baseTimes.Fajr,    offset),
+            Dhuhr:   adjustTime(baseTimes.Dhuhr,   offset),
+            Asr:     adjustTime(baseTimes.Asr,     offset),
+            Maghrib: adjustTime(baseTimes.Maghrib, offset),
+            Sunset:  adjustTime(baseTimes.Maghrib, offset),
+            Isha:    adjustTime(baseTimes.Isha,    offset + 20),
+        };
 
         const now = new Date();
         const endOfDay = new Date(now);
