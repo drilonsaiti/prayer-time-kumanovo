@@ -60,7 +60,7 @@ const Times = ({today}) => {
                             <LayoutPrayerTime key={key}>
                                 {PRAYERS[key]}
                                 {<Icon>{createElement(ICONS[key])}</Icon>}
-                                <TimeParagraph>{key === 'Sunrise' ? fajrTime(item.timings[key]) : item.timings[key].split(" ")[0]}</TimeParagraph>
+                                <TimeParagraph>{item.timings[key].split(" ")[0]}</TimeParagraph>
                             </LayoutPrayerTime>
                         )
                     })}
