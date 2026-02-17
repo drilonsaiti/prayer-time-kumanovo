@@ -1,11 +1,10 @@
-import {fajrTime, ICONS, PRAYERS} from "../utils/helpers.js";
+import {ICONS, PRAYERS} from "../utils/helpers.js";
 import styled from "styled-components";
 import {createElement} from "react";
 import Icon from "../style/Icon.jsx";
 import TimeParagraph from "../style/Time.jsx";
 
 const LayoutTime = styled.div`
-
     display: grid;
     grid-template-columns: repeat(5, max-content);
     gap: 1rem;
@@ -47,7 +46,6 @@ const LayoutPrayerTime = styled.div`
     }
 `
 
-
 const Times = ({today}) => {
     const timingsToShow = ['Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
@@ -55,19 +53,17 @@ const Times = ({today}) => {
         <>
             {today?.map((item, index) => (
                 <LayoutTime key={index}>
-                    {timingsToShow.map(key => {
-                        return (
-                            <LayoutPrayerTime key={key}>
-                                {PRAYERS[key]}
-                                {<Icon>{createElement(ICONS[key])}</Icon>}
-                                <TimeParagraph>{item.timings[key].split(" ")[0]}</TimeParagraph>
-                            </LayoutPrayerTime>
-                        )
-                    })}
+                    {timingsToShow.map(key => (
+                        <LayoutPrayerTime key={key}>
+                            {PRAYERS[key]}
+                            <Icon>{createElement(ICONS[key])}</Icon>
+                            <TimeParagraph>{item.timings[key]}</TimeParagraph>
+                        </LayoutPrayerTime>
+                    ))}
                 </LayoutTime>
             ))}
         </>
-    )
+    );
 };
 
 export default Times;

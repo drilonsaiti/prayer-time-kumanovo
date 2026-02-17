@@ -11,8 +11,8 @@ const StyledDropdown = styled.div`
     box-shadow: 0 10px 12px rgba(0, 0, 0, 0.3);;
 
     ${(props) =>
-            props.backgroundColor &&
-            css`
+    props.backgroundColor &&
+    css`
                 background-image: ${props.backgroundColor} !important;
             `}
 `
@@ -61,15 +61,15 @@ const Dropdown = ({onSelectCity, isCity, setIsCity, onOpenDropdown, backgroundCo
         setIsCity(false);
     };
     const cities = [
-        { name: "Kumanovë" },
-        { name: "Tetovë" },
-        { name: "Strugë" },
-        { name: "Shkup" },
-        { name: "Gostivar" },
-        { name: "Prilep" },
-        { name: "Kërçovë" },
-        { name: "Dibër" },
-        { name: "Veles" },
+        {name: "Kumanovë"},
+        {name: "Tetovë"},
+        {name: "Strugë"},
+        {name: "Shkup"},
+        {name: "Gostivar"},
+        {name: "Prilep"},
+        {name: "Kërçovë"},
+        {name: "Dibër"},
+        {name: "Veles"},
     ]
     return (
         <StyledDropdown ref={dropdownRef} backgroundColor={backgroundColor}>

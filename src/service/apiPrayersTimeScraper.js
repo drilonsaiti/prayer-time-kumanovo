@@ -6,7 +6,7 @@ export async function scrapePrayerTimes(city = "Shkup") {
     try {
         // Call the Vercel serverless function
         const response = await axios.get(API_URL, {
-            params: { city },
+            params: {city},
             timeout: 15000 // Serverless functions can be slower on cold start
         });
 

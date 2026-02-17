@@ -3,8 +3,6 @@ import {usePrayersTime} from "./usePrayersTime.js";
 import {
     backgroundGradient,
     calculateTimeDifference,
-    convertStringToDate,
-    formatDate,
     gregorianDate,
     hijriDate,
     ICONS,
@@ -20,10 +18,10 @@ import {HiOutlineLocationMarker} from "react-icons/hi";
 import Icon from "../style/Icon.jsx";
 import Separator from "../style/Seperator.jsx";
 import FlexGroup from "../style/FlexGroup.jsx";
-import Spinner from "../style/Spinner.jsx";
 import {HiChevronDown, HiChevronUp} from "react-icons/hi2";
 import Dropdown from "../style/Dropdown.jsx";
 import {useLocation} from "./useLocation.js";
+import Skeleton from "./Skeleton.jsx"
 
 const Layout = styled.div`
     height: 100dvh;
@@ -101,7 +99,6 @@ const Home = () => {
 
     const {data, isLoading, error} = usePrayersTime(city);
 
-    // Update countdown every 30 seconds
     useEffect(() => {
         if (!data || !data[0]) return;
 
@@ -113,7 +110,6 @@ const Home = () => {
             const prayerTime = nextPrayer(data[0].timings);
             const prevPrayer = localStorage.getItem('prev');
 
-            // Reload if countdown shows seconds OR it's just past midnight OR prayer changed
             if (newCountdown.includes("s") ||
                 (now.getHours() === 0 && now.getMinutes() <= 1) ||
                 prevPrayer !== prayerTime) {
@@ -121,19 +117,14 @@ const Home = () => {
             }
         };
 
-        // Initial update
         updateCountdown();
-
-        // Set up interval
         const interval = setInterval(updateCountdown, 30000);
-
         return () => clearInterval(interval);
     }, [data]);
 
-    // Show loading spinner
-    if (isLoading) return <Spinner/>;
+    // Show skeleton while loading or waiting for data
+    if (isLoading || !data || !data[0]) return <Skeleton/>;
 
-    // Show error if data fetch failed
     if (error) {
         return (
             <Layout style={{backgroundColor: 'black'}}>
@@ -142,21 +133,13 @@ const Home = () => {
         );
     }
 
-    // Wait for data to be available
-    if (!data || !data[0]) {
-        return <Spinner/>;
-    }
-
     const today = data;
     const prayerTime = nextPrayer(today[0].timings);
     const timecountdown = timeCountDown || calculateTimeDifference(today[0].timings);
 
-    // Store current prayer for comparison
     localStorage.setItem('prev', prayerTime);
 
-    const handleCity = () => {
-        setIsCity(!isCity)
-    }
+    const handleCity = () => setIsCity(!isCity);
 
     const handleSelectCity = (selectedCity) => {
         setCity(selectedCity);
@@ -164,9 +147,7 @@ const Home = () => {
         localStorage.setItem("city", selectedCity);
     };
 
-    const handleIsOpenDropdown = () => {
-        setIsCity(!isCity)
-    }
+    const handleIsOpenDropdown = () => setIsCity(!isCity);
 
     const backgroundColor = backgroundGradient[nextPrayerIconColor(today[0].timings, today[0].date)];
 
