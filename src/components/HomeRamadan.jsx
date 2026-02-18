@@ -20,7 +20,7 @@ import FlexGroup from "../style/FlexGroup.jsx";
 import {HiChevronDown, HiChevronUp} from "react-icons/hi2";
 import Dropdown from "../style/Dropdown.jsx";
 import {useLocation} from "./useLocation.js";
-import Skeleton from "../style/Skeleton.jsx";
+import Skeleton from "./Skeleton.jsx";
 
 const fadeIn = keyframes`
     from { opacity: 0; transform: translateY(20px); }
