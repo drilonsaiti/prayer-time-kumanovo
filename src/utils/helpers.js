@@ -191,12 +191,10 @@ export const nextPrayerTime = (timings) => {
                 const date = new Date();
                 date.setHours(hours);
                 date.setMinutes(minutes);
-                date.setMinutes(date.getMinutes() - 24);
+                date.setMinutes(date.getMinutes());
 
 
-                const adjustedTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-
-                return adjustedTime;
+                return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 
             }
             return timings[timingsToShow[i]].split(" ")[0];
