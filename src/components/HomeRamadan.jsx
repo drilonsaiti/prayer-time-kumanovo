@@ -240,7 +240,7 @@ const Arch = styled.div`
 const Badge = styled.div`
     position: absolute;
     top: 1.6rem;
-    left: 50%;
+    left: 45%;
     transform: translateX(-50%);
     white-space: nowrap;
     font-size: 1.3rem;
@@ -263,6 +263,7 @@ const Location = styled.div`
     justify-content: center;
     gap: 1rem;
     animation: ${fadeUp} 0.8s ease-out 0.1s both;
+    padding-top: 4rem
 `;
 
 const Paragraph = styled.p`
