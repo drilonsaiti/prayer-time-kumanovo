@@ -72,28 +72,28 @@ const Layout = styled.div`
     justify-items: center;
     position: relative;
     overflow: hidden;
-    
+
     ${(props) => props.timeColor && css`
         background: ${props.timeColor};
     `}
     transition: background 1s ease;
-    
+
     /* Subtle pattern */
     &::after {
         content: '';
         position: absolute;
         inset: 0;
         background-image: repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 35px,
-            rgba(255, 215, 0, 0.02) 35px,
-            rgba(255, 215, 0, 0.02) 70px
+                45deg,
+                transparent,
+                transparent 35px,
+                rgba(255, 215, 0, 0.02) 35px,
+                rgba(255, 215, 0, 0.02) 70px
         );
         z-index: 0;
         pointer-events: none;
     }
-    
+
     > * {
         position: relative;
         z-index: 1;
@@ -135,7 +135,7 @@ const Lantern = styled.div`
     border-radius: 0 0 10px 10px;
     animation: ${swing} 3s ease-in-out infinite;
     transform-origin: top center;
-    
+
     &::before {
         content: '';
         position: absolute;
@@ -146,7 +146,7 @@ const Lantern = styled.div`
         height: 15px;
         background: #8b7355;
     }
-    
+
     &::after {
         content: '';
         position: absolute;
@@ -160,12 +160,18 @@ const Lantern = styled.div`
         box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
         animation: ${glow} 2s ease-in-out infinite;
     }
-    
-    ${(props) => props.position && css`
-        top: ${props.position.top};
-        right: ${props.position.right};
-        left: ${props.position.left};
-        animation-delay: ${props.delay || '0s'};
+
+    ${(props) => props.$top && css`
+        top: ${props.$top};
+    `}
+    ${(props) => props.$right && css`
+        right: ${props.$right};
+    `}
+    ${(props) => props.$left && css`
+        left: ${props.$left};
+    `}
+    ${(props) => props.$delay && css`
+        animation-delay: ${props.$delay};
     `}
 `;
 
@@ -180,7 +186,7 @@ const IslamicArch = styled.div`
     border: 3px solid rgba(255, 215, 0, 0.3);
     border-bottom: none;
     border-radius: 100px 100px 0 0;
-    
+
     &::before {
         content: '';
         position: absolute;
@@ -203,16 +209,22 @@ const Star = styled.div`
     border-left: 3px solid transparent;
     border-right: 3px solid transparent;
     border-bottom: 5px solid #ffd700;
-    animation: ${twinkle} ${props => props.duration || '3s'} infinite;
-    animation-delay: ${props => props.delay || '0s'};
-    
-    ${(props) => props.position && css`
-        top: ${props.position.top};
-        left: ${props.position.left};
-        right: ${props.position.right};
-        bottom: ${props.position.bottom};
+    animation: ${twinkle} ${props => props.$duration || '3s'} infinite;
+    animation-delay: ${props => props.$delay || '0s'};
+
+    ${(props) => props.$top && css`
+        top: ${props.$top};
     `}
-    
+    ${(props) => props.$left && css`
+        left: ${props.$left};
+    `}
+    ${(props) => props.$right && css`
+        right: ${props.$right};
+    `}
+    ${(props) => props.$bottom && css`
+        bottom: ${props.$bottom};
+    `}
+
     &::before {
         content: '';
         position: absolute;
@@ -377,17 +389,17 @@ const Home = () => {
 
             <Crescent />
 
-            <Lantern position={{top: '12%', right: '15%'}} delay="0s" />
-            <Lantern position={{top: '15%', right: '8%'}} delay="0.5s" />
-            <Lantern position={{top: '20%', right: '12%'}} delay="1s" />
+            <Lantern $top="12%" $right="15%" $delay="0s" />
+            <Lantern $top="15%" $right="8%" $delay="0.5s" />
+            <Lantern $top="20%" $right="12%" $delay="1s" />
 
             <IslamicArch />
 
-            <Star position={{top: '18%', left: '12%'}} duration="3s" delay="0s" />
-            <Star position={{top: '25%', left: '20%'}} duration="4s" delay="1s" />
-            <Star position={{top: '35%', right: '25%'}} duration="3.5s" delay="0.5s" />
-            <Star position={{top: '70%', left: '10%'}} duration="4.5s" delay="1.5s" />
-            <Star position={{bottom: '20%', right: '18%'}} duration="3.8s" delay="0.8s" />
+            <Star $top="18%" $left="12%" $duration="3s" $delay="0s" />
+            <Star $top="25%" $left="20%" $duration="4s" $delay="1s" />
+            <Star $top="35%" $right="25%" $duration="3.5s" $delay="0.5s" />
+            <Star $top="70%" $left="10%" $duration="4.5s" $delay="1.5s" />
+            <Star $bottom="20%" $right="18%" $duration="3.8s" $delay="0.8s" />
 
             <Location>
                 <FlexGroup type="row">
