@@ -282,7 +282,7 @@ export const calculateTimeDifference = (timings) => {
                 const date = new Date();
                 date.setHours(hours);
                 date.setMinutes(minutes);
-                date.setMinutes(date.getMinutes() - 24);
+                date.setMinutes(date.getMinutes());
                 prayerTimeStamp = date.getTime();
             }
 
