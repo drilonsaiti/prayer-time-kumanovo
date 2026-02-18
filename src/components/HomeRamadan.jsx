@@ -1,6 +1,8 @@
-import {createElement, useEffect, useRef, useState} from 'react';
-import {usePrayersTime} from "./usePrayersTime.js";
+
+import { createElement, useEffect, useRef, useState } from 'react';
+import { usePrayersTime } from "./usePrayersTime.js";
 import {
+    backgroundGradient,
     calculateTimeDifference,
     gregorianDate,
     hijriDate,
@@ -11,57 +13,56 @@ import {
     PRAYERS
 } from "../utils/helpers.js";
 import Times from "./Times.jsx";
-import styled, {css, keyframes} from "styled-components";
-
-import {HiOutlineLocationMarker} from "react-icons/hi";
+import styled, { css, keyframes } from "styled-components";
+import { HiOutlineLocationMarker } from "react-icons/hi";
 import Icon from "../style/Icon.jsx";
 import Separator from "../style/Seperator.jsx";
 import FlexGroup from "../style/FlexGroup.jsx";
-import {HiChevronDown, HiChevronUp} from "react-icons/hi2";
+import { HiChevronDown, HiChevronUp } from "react-icons/hi2";
 import Dropdown from "../style/Dropdown.jsx";
-import {useLocation} from "./useLocation.js";
+import { useLocation } from "./useLocation.js";
 import Skeleton from "./Skeleton.jsx";
 
-const fadeIn = keyframes`
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-`;
+/* ── Keyframes ─────────────────────────────────────────────── */
 
-const shimmer = keyframes`
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-`;
-
-const float = keyframes`
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-10px) rotate(2deg); }
+const floatY = keyframes`
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-12px); }
 `;
 
 const swing = keyframes`
-    0%, 100% { transform: rotate(-3deg); }
-    50% { transform: rotate(3deg); }
-`;
-
-const glow = keyframes`
-    0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.4)); }
-    50% { filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.7)); }
+    0%, 100% { transform: rotate(-6deg); }
+    50%       { transform: rotate(6deg); }
 `;
 
 const twinkle = keyframes`
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.3); }
 `;
 
-// Time-based backgrounds
-const ramadanBackgrounds = {
-    'Fajr': 'linear-gradient(135deg, #2d1b4e 0%, #4a3a6b 100%)',
-    'Sunrise': 'linear-gradient(135deg, #5a4a7a 0%, #8b7ba8 100%)',
-    'Dhuhr': 'linear-gradient(135deg, #d4af37 0%, #f4d03f 100%)',
-    'Asr': 'linear-gradient(135deg, #e8a05d 0%, #f4b860 100%)',
-    'Sunset': 'linear-gradient(135deg, #d35d6e 0%, #e88388 100%)',
-    'Maghrib': 'linear-gradient(135deg, #8b5a8e 0%, #a67ba8 100%)',
-    'Isha': 'linear-gradient(135deg, #1a0b2e 0%, #2d1b4e 100%)',
+const goldShimmer = keyframes`
+    0%   { background-position: -300% center; }
+    100% { background-position:  300% center; }
+`;
+
+const fadeUp = keyframes`
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+`;
+
+/* ── Ramadan background palette (replaces backgroundGradient) ─ */
+
+const ramadanGradient = {
+    Fajr:    'linear-gradient(160deg, #1b0c3a 0%, #2e1760 100%)',
+    Sunrise: 'linear-gradient(160deg, #2e1760 0%, #5c3a8e 100%)',
+    Dhuhr:   'linear-gradient(160deg, #1a2a6c 0%, #2e4a9e 100%)',
+    Asr:     'linear-gradient(160deg, #2e1760 0%, #7b4a2e 100%)',
+    Sunset:  'linear-gradient(160deg, #4a1540 0%, #8e3a6e 100%)',
+    Maghrib: 'linear-gradient(160deg, #1b0c3a 0%, #4a1540 100%)',
+    Isha:    'linear-gradient(160deg, #0a0516 0%, #1b0c3a 100%)',
 };
+
+/* ── Layout ─────────────────────────────────────────────────── */
 
 const Layout = styled.div`
     height: 100dvh;
@@ -73,262 +74,252 @@ const Layout = styled.div`
     position: relative;
     overflow: hidden;
 
-    ${(props) => props.timeColor && css`
-        background: ${props.timeColor};
-    `}
-    transition: background 1s ease;
+    ${({ bg }) => bg && css`background: ${bg};`}
+    transition: background 1.2s ease;
 
-    /* Subtle pattern */
-    &::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 35px,
-                rgba(255, 215, 0, 0.02) 35px,
-                rgba(255, 215, 0, 0.02) 70px
-        );
-        z-index: 0;
-        pointer-events: none;
-    }
-
-    > * {
-        position: relative;
-        z-index: 1;
-    }
-`;
-
-// CSS Crescent Moon
-const Crescent = styled.div`
-    position: absolute;
-    top: 8%;
-    left: 8%;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    box-shadow: 15px 5px 0 0 #ffd700;
-    animation: ${float} 6s ease-in-out infinite;
-    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
-    z-index: 0;
-
-    &::after {
-        content: '';
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        width: 15px;
-        height: 15px;
-        background: #ffd700;
-        border-radius: 50%;
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-    }
-`;
-
-// CSS Lantern
-const Lantern = styled.div`
-    position: absolute;
-    width: 40px;
-    height: 55px;
-    background: linear-gradient(to bottom, #d4af37, #b8860b);
-    border-radius: 0 0 10px 10px;
-    animation: ${swing} 3s ease-in-out infinite;
-    transform-origin: top center;
-
+    /* subtle diagonal gold trellis */
     &::before {
         content: '';
         position: absolute;
-        top: -8px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 2px;
-        height: 15px;
-        background: #8b7355;
+        inset: 0;
+        background-image:
+            repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 48px,
+                rgba(255, 215, 0, 0.03) 48px,
+                rgba(255, 215, 0, 0.03) 49px
+            );
+        pointer-events: none;
+        z-index: 0;
     }
+
+    > * { position: relative; z-index: 1; }
+`;
+
+/* ── Crescent moon (pure CSS) ───────────────────────────────── */
+
+const Moon = styled.div`
+    position: absolute;
+    top: 6%;
+    left: 6%;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    /* The "bite" trick: shadow on same background colour as the cutout */
+    box-shadow: 14px -4px 0 2px #ffd700;
+    filter: drop-shadow(0 0 18px rgba(255, 215, 0, 0.55));
+    animation: ${floatY} 7s ease-in-out infinite;
+    z-index: 0;
+`;
+
+/* ── Star (6-pointed, pure CSS) ─────────────────────────────── */
+
+const StarWrap = styled.div`
+    position: absolute;
+    top:    ${({ $top })    => $top    || 'auto'};
+    left:   ${({ $left })   => $left   || 'auto'};
+    right:  ${({ $right })  => $right  || 'auto'};
+    bottom: ${({ $bottom }) => $bottom || 'auto'};
+    z-index: 0;
+    animation: ${twinkle} ${({ $dur }) => $dur || '3s'} ease-in-out infinite;
+    animation-delay: ${({ $delay }) => $delay || '0s'};
+`;
+
+const StarUp = styled.div`
+    width: 0;
+    height: 0;
+    border-left:   6px solid transparent;
+    border-right:  6px solid transparent;
+    border-bottom: 10px solid #ffd700;
+    position: relative;
 
     &::after {
         content: '';
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 25px;
-        height: 30px;
-        background: #ffe4b5;
-        border-radius: 50%;
-        box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-        animation: ${glow} 2s ease-in-out infinite;
+        top: 3px;
+        left: -6px;
+        width: 0;
+        height: 0;
+        border-left:   6px solid transparent;
+        border-right:  6px solid transparent;
+        border-top:    10px solid #ffd700;
     }
-
-    ${(props) => props.$top && css`
-        top: ${props.$top};
-    `}
-    ${(props) => props.$right && css`
-        right: ${props.$right};
-    `}
-    ${(props) => props.$left && css`
-        left: ${props.$left};
-    `}
-    ${(props) => props.$delay && css`
-        animation-delay: ${props.$delay};
-    `}
 `;
 
-// CSS Islamic Arch
-const IslamicArch = styled.div`
+const Star = ({ top, left, right, bottom, dur, delay }) => (
+    <StarWrap $top={top} $left={left} $right={right} $bottom={bottom} $dur={dur} $delay={delay}>
+        <StarUp />
+    </StarWrap>
+);
+
+/* ── Lantern (pure CSS) ─────────────────────────────────────── */
+
+const LanternWrap = styled.div`
+    position: absolute;
+    top:   ${({ $top })   => $top   || '10%'};
+    right: ${({ $right }) => $right || '10%'};
+    left:  ${({ $left })  => $left  || 'auto'};
+    z-index: 0;
+    animation: ${swing} ${({ $speed }) => $speed || '3.5s'} ease-in-out infinite;
+    animation-delay: ${({ $delay }) => $delay || '0s'};
+    transform-origin: top center;
+`;
+
+const LanternString = styled.div`
+    width: 2px;
+    height: 18px;
+    background: rgba(255, 215, 0, 0.6);
+    margin: 0 auto;
+`;
+
+const LanternBody = styled.div`
+    width: 28px;
+    height: 44px;
+    background: linear-gradient(to bottom, #c8972a, #f4c94f, #c8972a);
+    border-radius: 4px 4px 10px 10px;
+    position: relative;
+    box-shadow: 0 0 22px rgba(255, 200, 0, 0.7);
+
+    /* top cap */
+    &::before {
+        content: '';
+        position: absolute;
+        top: -7px;
+        left: -3px;
+        width: 34px;
+        height: 8px;
+        background: #a07820;
+        border-radius: 4px;
+    }
+
+    /* inner glow */
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 6px;
+        background: rgba(255, 240, 150, 0.45);
+        border-radius: 4px 4px 8px 8px;
+    }
+`;
+
+const LanternBottom = styled.div`
+    width: 4px;
+    height: 10px;
+    background: #a07820;
+    margin: 0 auto;
+    border-radius: 0 0 4px 4px;
+`;
+
+const Lantern = ({ top, right, left, speed, delay }) => (
+    <LanternWrap $top={top} $right={right} $left={left} $speed={speed} $delay={delay}>
+        <LanternString />
+        <LanternBody />
+        <LanternBottom />
+    </LanternWrap>
+);
+
+/* ── Islamic arch (bottom decoration) ──────────────────────── */
+
+const Arch = styled.div`
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 200px;
-    height: 150px;
-    border: 3px solid rgba(255, 215, 0, 0.3);
+    width: 220px;
+    height: 130px;
+    border: 2px solid rgba(255, 215, 0, 0.18);
     border-bottom: none;
-    border-radius: 100px 100px 0 0;
-
-    &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0;
-        height: 0;
-        border-left: 30px solid transparent;
-        border-right: 30px solid transparent;
-        border-bottom: 40px solid rgba(255, 215, 0, 0.2);
-    }
+    border-radius: 110px 110px 0 0;
+    pointer-events: none;
+    z-index: 0;
 `;
 
-// CSS Stars
-const Star = styled.div`
+/* ── Ramadan badge ──────────────────────────────────────────── */
+
+const Badge = styled.div`
     position: absolute;
-    width: 0;
-    height: 0;
-    border-left: 3px solid transparent;
-    border-right: 3px solid transparent;
-    border-bottom: 5px solid #ffd700;
-    animation: ${twinkle} ${props => props.$duration || '3s'} infinite;
-    animation-delay: ${props => props.$delay || '0s'};
-
-    ${(props) => props.$top && css`
-        top: ${props.$top};
-    `}
-    ${(props) => props.$left && css`
-        left: ${props.$left};
-    `}
-    ${(props) => props.$right && css`
-        right: ${props.$right};
-    `}
-    ${(props) => props.$bottom && css`
-        bottom: ${props.$bottom};
-    `}
-
-    &::before {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 0;
-        border-left: 3px solid transparent;
-        border-right: 3px solid transparent;
-        border-top: 5px solid #ffd700;
-        top: -8px;
-        left: -3px;
-    }
-`;
-
-const RamadanBanner = styled.div`
-    position: absolute;
-    top: 2rem;
+    top: 1.6rem;
     left: 50%;
     transform: translateX(-50%);
-    font-family: 'Georgia', serif;
-    font-size: 1.4rem;
+    white-space: nowrap;
+    font-size: 1.3rem;
+    letter-spacing: 0.08em;
     color: #ffd700;
-    text-align: center;
-    padding: 0.8rem 2.5rem;
-    border: 2px solid rgba(255, 215, 0, 0.3);
-    border-radius: 50px;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    animation: ${fadeIn} 1s ease-out;
+    padding: 0.6rem 2rem;
+    border: 1px solid rgba(255, 215, 0, 0.35);
+    border-radius: 100px;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(8px);
+    animation: ${fadeUp} 0.9s ease-out both;
     z-index: 2;
-
-    span {
-        margin: 0 0.5rem;
-    }
 `;
+
+/* ── Typography ─────────────────────────────────────────────── */
 
 const Location = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    animation: ${fadeIn} 0.8s ease-out 0.2s both;
+    animation: ${fadeUp} 0.8s ease-out 0.1s both;
 `;
 
 const Paragraph = styled.p`
     font-size: 2.5rem;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 
-    ${(props) =>
-            props.countDown &&
-            css`
-                font-size: 8rem;
-                background: linear-gradient(135deg, #ffd700, #ffed4e, #ffd700);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                background-size: 200% 100%;
-                animation: ${shimmer} 3s linear infinite;
-                filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.4));
-            `}
-
-    ${(props) =>
-            props.weather &&
-            css`
-                font-size: 1.4rem;
-            `}
+    ${({ countDown }) => countDown && css`
+        font-size: 8rem;
+        background: linear-gradient(90deg, #b8860b, #ffd700, #ffe97a, #ffd700, #b8860b);
+        background-size: 300% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: ${goldShimmer} 4s linear infinite;
+    `}
 `;
+
+/* ── City map (same as Home.jsx) ────────────────────────────── */
 
 const cities = {
     "Kumanovo": "Kumanovë",
-    "Skopje": "Shkup",
-    "Tetovo": "Tetovë",
-    "Struga": "Strugë",
+    "Skopje":   "Shkup",
+    "Tetovo":   "Tetovë",
+    "Struga":   "Strugë",
     "Gostivar": "Gostivar",
-    "Prilep": "Prilep",
-    "Kičevo": "Kërçovë",
-    "Debar": "Dibër",
-    "Veles": "Veles",
-    "Strumica": "Strumicë"
-}
+    "Prilep":   "Prilep",
+    "Kičevo":   "Kërçovë",
+    "Debar":    "Dibër",
+    "Veles":    "Veles",
+    "Strumica": "Strumicë",
+};
 
-const Home = () => {
+/* ── Component ──────────────────────────────────────────────── */
+
+const HomeRamadan = () => {
     const [city, setCity] = useState("Kumanovë");
     const [isCity, setIsCity] = useState(false);
-    const {address} = useLocation();
+    const { address, isLoading: isLoadingLocation } = useLocation();
+    const dropdownRef = useRef(null);
     const [timeCountDown, setTimeCountDown] = useState("");
 
     useEffect(() => {
         const storageCity = localStorage.getItem("city");
         if (address?.country === "North Macedonia") {
             if (!storageCity) {
-                setCity(cities[address?.city])
-                localStorage.setItem("city", cities[address?.city])
+                setCity(cities[address?.city]);
+                localStorage.setItem("city", cities[address?.city]);
             } else if (storageCity !== address?.city) {
-                setCity(cities[address?.city])
+                setCity(cities[address?.city]);
             } else {
                 setCity(cities[storageCity]);
             }
         } else {
-            setCity("Kumanovë")
+            setCity("Kumanovë");
         }
     }, [address?.city, address?.country]);
 
-    const {data, isLoading, error} = usePrayersTime(city);
+    const { data, isLoading, error } = usePrayersTime(city);
 
     useEffect(() => {
         if (!data || !data[0]) return;
@@ -341,9 +332,11 @@ const Home = () => {
             const prayerTime = nextPrayer(data[0].timings);
             const prevPrayer = localStorage.getItem('prev');
 
-            if (newCountdown.includes("s") ||
+            if (
+                newCountdown.includes("s") ||
                 (now.getHours() === 0 && now.getMinutes() <= 1) ||
-                prevPrayer !== prayerTime) {
+                prevPrayer !== prayerTime
+            ) {
                 window.location.reload();
             }
         };
@@ -357,7 +350,7 @@ const Home = () => {
 
     if (error) {
         return (
-            <Layout timeColor={ramadanBackgrounds['Isha']}>
+            <Layout bg={ramadanGradient['Isha']}>
                 <Paragraph>Error loading prayer times. Please refresh.</Paragraph>
             </Layout>
         );
@@ -366,89 +359,92 @@ const Home = () => {
     const today = data;
     const prayerTime = nextPrayer(today[0].timings);
     const timecountdown = timeCountDown || calculateTimeDifference(today[0].timings);
-    const currentPrayerColor = nextPrayerIconColor(today[0].timings, today[0].date);
+    const currentPrayer = nextPrayerIconColor(today[0].timings, today[0].date);
+    const bg = ramadanGradient[currentPrayer] ?? ramadanGradient['Isha'];
 
     localStorage.setItem('prev', prayerTime);
 
-    const handleCity = () => setIsCity(!isCity);
+    const handleCity = () => setIsCity(prev => !prev);
     const handleSelectCity = (selectedCity) => {
         setCity(selectedCity);
         setIsCity(false);
         localStorage.setItem("city", selectedCity);
     };
-    const handleIsOpenDropdown = () => setIsCity(!isCity);
+    const handleIsOpenDropdown = () => setIsCity(prev => !prev);
 
     return (
-        <Layout timeColor={ramadanBackgrounds[currentPrayerColor]}>
-            {/* CSS Decorations */}
-            <RamadanBanner>
-                <span>🌙</span>
-                Ramazan Mubarek
-                <span>✨</span>
-            </RamadanBanner>
+        <Layout bg={bg}>
 
-            <Crescent />
+            {/* ── Decorations (z-index: 0, pointer-events: none) ── */}
+            <Badge>🌙 Ramazan Mubarek ✨</Badge>
 
-            <Lantern $top="12%" $right="15%" $delay="0s" />
-            <Lantern $top="15%" $right="8%" $delay="0.5s" />
-            <Lantern $top="20%" $right="12%" $delay="1s" />
+            <Moon />
 
-            <IslamicArch />
+            {/* Stars */}
+            <Star top="20%" left="14%"  dur="3.2s" delay="0s"   />
+            <Star top="30%" left="22%"  dur="4.1s" delay="0.6s" />
+            <Star top="50%" left="8%"   dur="3.7s" delay="1.2s" />
+            <Star top="65%" left="18%"  dur="4.5s" delay="0.3s" />
+            <Star top="22%" right="30%" dur="3.4s" delay="0.9s" />
+            <Star top="42%" right="12%" dur="4.2s" delay="1.5s" />
+            <Star top="72%" right="20%" dur="3.9s" delay="0.4s" />
 
-            <Star $top="18%" $left="12%" $duration="3s" $delay="0s" />
-            <Star $top="25%" $left="20%" $duration="4s" $delay="1s" />
-            <Star $top="35%" $right="25%" $duration="3.5s" $delay="0.5s" />
-            <Star $top="70%" $left="10%" $duration="4.5s" $delay="1.5s" />
-            <Star $bottom="20%" $right="18%" $duration="3.8s" $delay="0.8s" />
+            {/* Lanterns — top-right cluster */}
+            <Lantern top="8%"  right="18%" speed="3.8s" delay="0s"   />
+            <Lantern top="12%" right="9%"  speed="3.2s" delay="0.6s" />
+            <Lantern top="20%" right="14%" speed="4.1s" delay="1.1s" />
 
+            <Arch />
+
+            {/* ── Main content ─────────────────────────────────── */}
             <Location>
                 <FlexGroup type="row">
                     <FlexGroup type="row">
-                        <Icon>
-                            <HiOutlineLocationMarker/>
-                        </Icon>
+                        <Icon><HiOutlineLocationMarker /></Icon>
                         <FlexGroup>
-                            <FlexGroup type="row" onClick={handleCity} style={{cursor: 'pointer'}}>
+                            <FlexGroup type="row" onClick={handleCity} style={{ cursor: 'pointer' }}>
                                 <Paragraph>{city}</Paragraph>
-                                {isCity ? <HiChevronUp/> : <HiChevronDown/>}
+                                {isCity ? <HiChevronUp /> : <HiChevronDown />}
                             </FlexGroup>
-                            {isCity && <Dropdown
-                                onSelectCity={handleSelectCity}
-                                onOpenDropdown={handleIsOpenDropdown}
-                                backgroundColor={ramadanBackgrounds[currentPrayerColor]}
-                            />}
+                            {isCity && (
+                                <Dropdown
+                                    onSelectCity={handleSelectCity}
+                                    onOpenDropdown={handleIsOpenDropdown}
+                                    backgroundColor={bg}
+                                />
+                            )}
                         </FlexGroup>
                     </FlexGroup>
                 </FlexGroup>
             </Location>
 
-            <Icon bigIcon style={{animation: `${fadeIn} 0.8s ease-out 0.4s both`}}>
-                {createElement(ICONS[currentPrayerColor])}
+            <Icon bigIcon>
+                {createElement(ICONS[currentPrayer])}
             </Icon>
 
-            <FlexGroup style={{animation: `${fadeIn} 0.8s ease-out 0.6s both`}}>
-                <Paragraph style={{alignSelf: 'center'}}>
+            <FlexGroup>
+                <Paragraph style={{ alignSelf: 'center' }}>
                     {PRAYERS[prayerTime]} {nextPrayerTime(today[0].timings)}
                 </Paragraph>
-                <Paragraph style={{alignSelf: 'center'}} countDown>
+                <Paragraph style={{ alignSelf: 'center' }} countDown>
                     {timecountdown}
                 </Paragraph>
             </FlexGroup>
 
-            <FlexGroup minHeight style={{animation: `${fadeIn} 0.8s ease-out 0.8s both`}}>
-                <FlexGroup type="row" style={{alignSelf: 'center'}}>
-                    <p>{gregorianDate(today[0].date.gregorian)} </p>
-                    <Separator/>
-                    <p>{hijriDate(today[0].date.hijri)} </p>
+            <FlexGroup minHeight>
+                <FlexGroup type="row" style={{ alignSelf: 'center' }}>
+                    <p>{gregorianDate(today[0].date.gregorian)}</p>
+                    <Separator />
+                    <p>{hijriDate(today[0].date.hijri)}</p>
                 </FlexGroup>
-                <Times today={today}/>
+                <Times today={today} />
             </FlexGroup>
 
-            <Paragraph style={{fontSize: '1.5rem', animation: `${fadeIn} 0.8s ease-out 1s both`}}>
+            <Paragraph style={{ fontSize: '1.5rem' }}>
                 Created by Drilon Saiti
             </Paragraph>
         </Layout>
     );
 };
 
-export default Home;
+export default HomeRamadan;

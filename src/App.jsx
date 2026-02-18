@@ -19,7 +19,7 @@ function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <GlobalStyles/>
-            <Home/>
+            <HomeRamadan/>
         </QueryClientProvider>
     )
 }
