@@ -433,7 +433,7 @@ const HomeRamadan = () => {
 
             <FlexGroup minHeight>
                 <FlexGroup type="row" style={{ alignSelf: 'center' }}>
-                    <p>{today[0].date.gregorian ? gregorianDate(today[0].date.gregorian) : today[0].date}</p>
+                    <p>{gregorianDate(today[0].date.gregorian)}</p>
                     {today[0].date.hijri && (
                         <>
                             <Separator />

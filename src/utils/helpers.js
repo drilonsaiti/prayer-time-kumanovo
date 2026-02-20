@@ -315,8 +315,9 @@ export const calculateTimeDifference = (timings) => {
 }
 
 export const gregorianDate = (gregorian) => {
-
-    return `${gregorian.day} ${MONTHS[gregorian.month.en]}`
+    console.log(gregorian)
+    if (!gregorian.month.en) return `${gregorian.day} ${MONTHS[gregorian.month.en]}`
+    return '';
 }
 
 function toUnicode(str) {
