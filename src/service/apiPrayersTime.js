@@ -3,30 +3,28 @@ import {scrapePrayerTimes} from "./apiPrayersTimeScraper.js";
 
 export async function getPrayersTime(city) {
     try {
+        // Get scraped prayer times for today
         const scrapedTimes = await scrapePrayerTimes(city);
 
+        // Get Hijri/Gregorian dates from API
+        const response = await apiRequest(city);
+        const apiData = response.data.data;
+
+        // Get today's date entry
         const today = new Date();
         const todayFormatted = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
 
-        const fallbackDate = {
-            gregorian: { date: todayFormatted },
-            hijri: null,
-        };
+        const todayData = apiData.find(item => item.date.gregorian.date === todayFormatted);
 
-        let dateInfo = fallbackDate;
+        if (!todayData) {
+            throw new Error('Today\'s date not found in API response');
+        }
 
-        /*try {
-            const response = await apiRequest(city);
-            const apiData = response.data.data;
-            const todayData = apiData.find(item => item.date.gregorian.date === todayFormatted);
-            if (todayData) dateInfo = todayData.date;
-        } catch (apiErr) {
-            console.warn('aladhan API unavailable, continuing without date info:', apiErr.message);
-        }*/
-
+        // Combine: use scraped times but keep API date info
         return [{
-            date: '',
+            ...todayData,
             timings: {
+                ...todayData.timings,
                 Fajr: scrapedTimes.Fajr,
                 Sunrise: scrapedTimes.Sunrise,
                 Dhuhr: scrapedTimes.Dhuhr,
