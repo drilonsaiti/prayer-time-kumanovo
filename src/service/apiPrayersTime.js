@@ -15,17 +15,17 @@ export async function getPrayersTime(city) {
 
         let dateInfo = fallbackDate;
 
-        try {
+        /*try {
             const response = await apiRequest(city);
             const apiData = response.data.data;
             const todayData = apiData.find(item => item.date.gregorian.date === todayFormatted);
             if (todayData) dateInfo = todayData.date;
         } catch (apiErr) {
             console.warn('aladhan API unavailable, continuing without date info:', apiErr.message);
-        }
+        }*/
 
         return [{
-            date: dateInfo,
+            date: '',
             timings: {
                 Fajr: scrapedTimes.Fajr,
                 Sunrise: scrapedTimes.Sunrise,
