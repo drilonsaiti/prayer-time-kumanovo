@@ -1,4 +1,3 @@
-
 import { createElement, useEffect, useRef, useState } from 'react';
 import { usePrayersTime } from "./usePrayersTime.js";
 import {
@@ -435,8 +434,12 @@ const HomeRamadan = () => {
             <FlexGroup minHeight>
                 <FlexGroup type="row" style={{ alignSelf: 'center' }}>
                     <p>{gregorianDate(today[0].date.gregorian)}</p>
-                    <Separator />
-                    <p>{hijriDate(today[0].date.hijri)}</p>
+                    {today[0].date.hijri && (
+                        <>
+                            <Separator />
+                            <p>{hijriDate(today[0].date.hijri)}</p>
+                        </>
+                    )}
                 </FlexGroup>
                 <Times today={today} />
             </FlexGroup>
