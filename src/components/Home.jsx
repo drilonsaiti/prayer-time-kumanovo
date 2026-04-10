@@ -22,6 +22,7 @@ import {HiChevronDown, HiChevronUp} from "react-icons/hi2";
 import Dropdown from "../style/Dropdown.jsx";
 import {useLocation} from "./useLocation.js";
 import Skeleton from "./Skeleton.jsx"
+import CreditLink from "../style/CreditLink.jsx";
 
 const Layout = styled.div`
     height: 100dvh;
@@ -211,9 +212,9 @@ const Home = () => {
                 <Times today={today}/>
             </FlexGroup>
 
-            <Paragraph style={{fontSize: '1.5rem'}}>
-                Created by Drilon Saiti
-            </Paragraph>
+            <CreditLink href="https://drilonsaiti.github.io" target="_blank" rel="noopener noreferrer">
+                crafted by <span>Drilon Saiti</span>
+            </CreditLink>
         </Layout>
     );
 };
