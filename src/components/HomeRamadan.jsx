@@ -375,8 +375,6 @@ const HomeRamadan = () => {
     return (
         <Layout bg={bg}>
 
-            <Moon />
-
             <Arch />
 
             {/* ── Main content ─────────────────────────────────── */}
@@ -394,6 +392,7 @@ const HomeRamadan = () => {
                                     onSelectCity={handleSelectCity}
                                     onOpenDropdown={handleIsOpenDropdown}
                                     backgroundColor={bg}
+                                    style={{zIndex: 1000}}
                                 />
                             )}
                         </FlexGroup>
@@ -406,10 +405,10 @@ const HomeRamadan = () => {
             </Icon>
 
             <FlexGroup>
-                <Paragraph style={{ alignSelf: 'center' }}>
+                <Paragraph style={{ alignSelf: 'center',fontSize: '5rem' }}>
                     {PRAYERS[prayerTime]} {nextPrayerTime(today[0].timings)}
                 </Paragraph>
-                <Paragraph style={{ alignSelf: 'center' }} >
+                <Paragraph style={{ alignSelf: 'center',fontSize: '8rem' }} >
                     {timecountdown}
                 </Paragraph>
             </FlexGroup>
