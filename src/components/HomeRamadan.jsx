@@ -52,13 +52,13 @@ const fadeUp = keyframes`
 /* ── Ramadan background palette (replaces backgroundGradient) ─ */
 
 const ramadanGradient = {
-    Fajr:    'linear-gradient(160deg, #1b0c3a 0%, #2e1760 100%)',
-    Sunrise: 'linear-gradient(160deg, #2e1760 0%, #5c3a8e 100%)',
-    Dhuhr:   'linear-gradient(160deg, #1a2a6c 0%, #2e4a9e 100%)',
-    Asr:     'linear-gradient(160deg, #2e1760 0%, #7b4a2e 100%)',
-    Sunset:  'linear-gradient(160deg, #4a1540 0%, #8e3a6e 100%)',
-    Maghrib: 'linear-gradient(160deg, #1b0c3a 0%, #4a1540 100%)',
-    Isha:    'linear-gradient(160deg, #0a0516 0%, #1b0c3a 100%)',
+    Fajr: 'linear-gradient(to bottom, #87CEEB, #4682B4)',
+    Sunrise: 'linear-gradient(to bottom, #87CEEB, #4682B4)',
+    Dhuhr: 'linear-gradient(to bottom, #90EE90, #228B22)',
+    Asr: 'linear-gradient(to bottom, #FFD700, #DAA520)',
+    Sunset: 'linear-gradient(to bottom, #FFA500, #FF6347)',
+    Maghrib: 'linear-gradient(to bottom, #FFA500, #FF6347)',
+    Isha: 'linear-gradient(to bottom, #00008B, #191970)',
 };
 
 /* ── Layout ─────────────────────────────────────────────────── */
@@ -375,24 +375,7 @@ const HomeRamadan = () => {
     return (
         <Layout bg={bg}>
 
-            {/* ── Decorations (z-index: 0, pointer-events: none) ── */}
-            <Badge>🌙 Ramazan Mubarek ✨</Badge>
-
             <Moon />
-
-            {/* Stars */}
-            <Star top="20%" left="14%"  dur="3.2s" delay="0s"   />
-            <Star top="30%" left="22%"  dur="4.1s" delay="0.6s" />
-            <Star top="50%" left="8%"   dur="3.7s" delay="1.2s" />
-            <Star top="65%" left="18%"  dur="4.5s" delay="0.3s" />
-            <Star top="22%" right="30%" dur="3.4s" delay="0.9s" />
-            <Star top="42%" right="12%" dur="4.2s" delay="1.5s" />
-            <Star top="72%" right="20%" dur="3.9s" delay="0.4s" />
-
-            {/* Lanterns — top-right cluster */}
-            <Lantern top="8%"  right="18%" speed="3.8s" delay="0s"   />
-            <Lantern top="12%" right="9%"  speed="3.2s" delay="0.6s" />
-            <Lantern top="20%" right="14%" speed="4.1s" delay="1.1s" />
 
             <Arch />
 
@@ -401,7 +384,7 @@ const HomeRamadan = () => {
                 <FlexGroup type="row">
                     <FlexGroup type="row">
                         <Icon><HiOutlineLocationMarker /></Icon>
-                        <FlexGroup>
+                        <FlexGroup style={{zIndex: 1000}}>
                             <FlexGroup type="row" onClick={handleCity} style={{ cursor: 'pointer' }}>
                                 <Paragraph>{city}</Paragraph>
                                 {isCity ? <HiChevronUp /> : <HiChevronDown />}
@@ -426,7 +409,7 @@ const HomeRamadan = () => {
                 <Paragraph style={{ alignSelf: 'center' }}>
                     {PRAYERS[prayerTime]} {nextPrayerTime(today[0].timings)}
                 </Paragraph>
-                <Paragraph style={{ alignSelf: 'center' }} countDown>
+                <Paragraph style={{ alignSelf: 'center' }} >
                     {timecountdown}
                 </Paragraph>
             </FlexGroup>
@@ -445,7 +428,7 @@ const HomeRamadan = () => {
             </FlexGroup>
 
             <Paragraph style={{ fontSize: '1.5rem' }}>
-                Created by Drilon Saiti
+                Created by <a href="https://drilonsaiti.github.io" target="_blank" rel="noopener noreferrer">Drilon Saiti</a>
             </Paragraph>
         </Layout>
     );
