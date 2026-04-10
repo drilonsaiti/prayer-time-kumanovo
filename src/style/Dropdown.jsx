@@ -3,19 +3,18 @@ import styled, {css} from "styled-components";
 
 const StyledDropdown = styled.div`
     position: absolute;
-    top: 7%;
-    //left: 34.7%;
+    top: 100%;          
+    left: 0;
+    z-index: 9999;     
     background-color: var(--color-grey-0);
     color: black;
     border-radius: 4px;
-    box-shadow: 0 10px 12px rgba(0, 0, 0, 0.3);;
+    box-shadow: 0 10px 12px rgba(0, 0, 0, 0.3);
 
     ${(props) =>
-    props.backgroundColor &&
-    css`
-                background-image: ${props.backgroundColor} !important;
-            `}
-`
+            props.backgroundColor &&
+            css`background-image: ${props.backgroundColor} !important;`}
+`;
 
 const StyledDropdownMenu = styled.div`
     display: flex;
@@ -37,8 +36,8 @@ const StyledDropdownItem = styled.div`
 
 const StyledHorizontalLine = styled.hr`
     border: none;
-    border-top: 1px solid var(--color-grey-400); /* Change color as needed */
-    margin: 0; /* Remove default margin */
+    border-top: 1px solid var(--color-grey-400); 
+    margin: 0; 
 `;
 
 const Dropdown = ({onSelectCity, isCity, setIsCity, onOpenDropdown, backgroundColor}) => {

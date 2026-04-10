@@ -382,7 +382,7 @@ const HomeRamadan = () => {
                 <FlexGroup type="row">
                     <FlexGroup type="row">
                         <Icon><HiOutlineLocationMarker /></Icon>
-                        <FlexGroup style={{zIndex: 1000}}>
+                        <FlexGroup style={{ zIndex: 9999, position: 'relative' }}>
                             <FlexGroup type="row" onClick={handleCity} style={{ cursor: 'pointer' }}>
                                 <Paragraph>{city}</Paragraph>
                                 {isCity ? <HiChevronUp /> : <HiChevronDown />}
@@ -392,7 +392,6 @@ const HomeRamadan = () => {
                                     onSelectCity={handleSelectCity}
                                     onOpenDropdown={handleIsOpenDropdown}
                                     backgroundColor={bg}
-                                    style={{zIndex: 1000}}
                                 />
                             )}
                         </FlexGroup>
