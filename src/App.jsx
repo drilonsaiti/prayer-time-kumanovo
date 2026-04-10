@@ -2,7 +2,6 @@ import {useState} from 'react'
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import Home from "./components/Home.jsx";
 import GlobalStyles from "./style/GlobalStyles.js";
-import HomeRamadan from "./components/HomeRamadan.jsx";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -19,7 +18,7 @@ function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <GlobalStyles/>
-            <HomeRamadan/>
+            <Home/>
         </QueryClientProvider>
     )
 }
