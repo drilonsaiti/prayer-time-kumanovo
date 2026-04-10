@@ -26,18 +26,28 @@ import Skeleton from "./Skeleton.jsx"
 const Layout = styled.div`
     height: 100dvh;
     display: grid;
-    grid-template-rows:10rem repeat(3, 1fr) 4rem;
+    grid-template-rows: 10rem repeat(3, 1fr) 4rem;
     align-items: center;
     justify-content: center;
     justify-items: center;
+    position: relative;
+    overflow: hidden;
 
-    ${(props) =>
-            props.backgroundColor &&
-            css`
-                background-image: ${props.backgroundColor};
-            `}
+    ${({ backgroundColor }) => backgroundColor && css`
+        background-image: ${backgroundColor};
+    `}
+    transition: background-image 1.2s ease;
+
+    /* glass noise overlay */
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(0px);
+        pointer-events: none;
+    }
 `;
-
 const Location = styled.div`
     display: flex;
     align-items: center;
@@ -47,19 +57,24 @@ const Location = styled.div`
 
 const Paragraph = styled.p`
     font-size: 2.5rem;
+    color: rgba(255, 255, 255, 0.92);
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 
-    ${(props) =>
-            props.countDown &&
-            css`
-                font-size: 8rem;
-            `}
+    ${({ countDown }) => countDown && css`
+        font-size: 8rem;
+        font-weight: 200;
+        letter-spacing: -0.02em;
+        background: linear-gradient(180deg, #ffffff 40%, rgba(255,255,255,0.55) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    `}
 
-    ${(props) =>
-            props.weather &&
-            css`
-                font-size: 1.4rem;
-            `}
-`
+    ${({ weather }) => weather && css`
+        font-size: 1.4rem;
+    `}
+`;
 
 const cities = {
     "Kumanovo": "Kumanovë",

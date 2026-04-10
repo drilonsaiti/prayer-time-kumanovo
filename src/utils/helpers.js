@@ -107,13 +107,13 @@ const HIJRIMONTHS = {
 };
 
 export const backgroundGradient = {
-    'Fajr': 'linear-gradient(to bottom, #87CEEB, #4682B4)',
-    'Sunrise': 'linear-gradient(to bottom, #87CEEB, #4682B4)',
-    'Dhuhr': 'linear-gradient(to bottom, #90EE90, #228B22)',
-    'Asr': 'linear-gradient(to bottom, #FFD700, #DAA520)',
-    'Sunset': 'linear-gradient(to bottom, #FFA500, #FF6347)',
-    'Maghrib': 'linear-gradient(to bottom, #FFA500, #FF6347)',
-    'Isha': 'linear-gradient(to bottom, #00008B, #191970)',
+    'Fajr':    'linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
+    'Sunrise': 'linear-gradient(160deg, #fc5c7d 0%, #6a3093 100%)',
+    'Dhuhr':   'linear-gradient(160deg, #1a6b3c 0%, #0f4c2a 50%, #0a2e1a 100%)',
+    'Asr':     'linear-gradient(160deg, #c79a2a 0%, #8b6914 50%, #5a4209 100%)',
+    'Sunset':  'linear-gradient(160deg, #c94b4b 0%, #4b134f 100%)',
+    'Maghrib': 'linear-gradient(160deg, #ee0979 0%, #ff6a00 100%)',
+    'Isha':    'linear-gradient(160deg, #0a0a1a 0%, #0d1b4b 50%, #1a1a3e 100%)',
 };
 export const formatDate = (date) => {
     return format(new Date(date), 'dd-MM-yyyy');
