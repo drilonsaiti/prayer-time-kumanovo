@@ -75,23 +75,46 @@ const Item = styled.button`
 
 const Dropdown = ({onSelectCity, onOpenDropdown, current}) => {
     const ref = useRef(null);
+    const opener = useRef(document.activeElement);
 
     useEffect(() => {
-        const close = (e) => {
-            if (e.type === 'keydown' ? e.key === 'Escape' : ref.current && !ref.current.contains(e.target)) {
+        const onPointerDown = (e) => {
+            if (!ref.current || ref.current.contains(e.target)) return;
+            // A press on the city button itself is handled by its own click (it toggles).
+            // Closing here too would make the click re-open the list.
+            if (e.target.closest?.('[aria-haspopup="listbox"]')) return;
+            onOpenDropdown();
+        };
+        const onKeyDown = (e) => {
+            if (e.key === 'Escape') {
                 onOpenDropdown();
+                opener.current?.focus?.();
             }
         };
-        document.addEventListener('mousedown', close);
-        document.addEventListener('keydown', close);
+        document.addEventListener('pointerdown', onPointerDown);
+        document.addEventListener('keydown', onKeyDown);
         return () => {
-            document.removeEventListener('mousedown', close);
-            document.removeEventListener('keydown', close);
+            document.removeEventListener('pointerdown', onPointerDown);
+            document.removeEventListener('keydown', onKeyDown);
         };
     }, [onOpenDropdown]);
 
+    // Put the focus on the current city when the list opens (keyboard and screen readers).
+    useEffect(() => {
+        ref.current?.querySelector('[aria-selected="true"]')?.focus({preventScroll: true});
+    }, []);
+
+    const onListKeyDown = (e) => {
+        const items = [...ref.current.querySelectorAll('[role="option"]')];
+        const i = items.indexOf(document.activeElement);
+        const move = {ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: items.length - 1}[e.key];
+        if (move === undefined) return;
+        e.preventDefault();
+        items[(move + items.length) % items.length]?.focus();
+    };
+
     return (
-        <Panel ref={ref}>
+        <Panel ref={ref} onKeyDown={onListKeyDown}>
             <Title>Zgjidh qytetin</Title>
             <List role="listbox" aria-label="Zgjidh qytetin">
                 {CITIES.map((name) => (

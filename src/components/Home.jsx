@@ -448,6 +448,8 @@ const Home = () => {
                     {city}
                     <span className="chev"><PrayerIcon name="Chevron" size={18}/></span>
                 </CityButton>
+                {/* inside Head, so the panel is positioned under the header, not under the whole card */}
+                {isCityOpen && <Dropdown current={city} onSelectCity={selectCity} onOpenDropdown={closeCity}/>}
             </Head>
             <Perf aria-hidden="true"/>
             {updateReady && (
@@ -456,7 +458,6 @@ const Home = () => {
                     <button type="button" onClick={applyUpdate}>Rifresko</button>
                 </UpdateBar>
             )}
-            {isCityOpen && <Dropdown current={city} onSelectCity={selectCity} onOpenDropdown={closeCity}/>}
         </>
     );
     const footer = (
