@@ -17,8 +17,6 @@ export async function getLocation() {
         try {
             const response = await apiLocation(latitude, longitude);
             const address = response.data.address;
-            localStorage.setItem('city', address.city);
-            localStorage.setItem('country', address.country);
             return response.data.address;
         } catch (err) {
             console.error(err);

@@ -1,90 +1,111 @@
-import React, {useEffect, useRef} from 'react';
-import styled, {css} from "styled-components";
+import {useEffect, useRef} from 'react';
+import styled, {keyframes} from 'styled-components';
+import PrayerIcon from '../components/PrayerIcons.jsx';
 
-const StyledDropdown = styled.div`
-    position: absolute;
-    top: 7%;
-    //left: 34.7%;
-    background-color: var(--color-grey-0);
-    color: black;
-    border-radius: 4px;
-    box-shadow: 0 10px 12px rgba(0, 0, 0, 0.3);;
+const CITIES = ["Kumanovë", "Tetovë", "Strugë", "Shkup", "Gostivar", "Prilep", "Kërçovë", "Dibër", "Veles"];
 
-    ${(props) =>
-    props.backgroundColor &&
-    css`
-                background-image: ${props.backgroundColor} !important;
-            `}
-`
-
-const StyledDropdownMenu = styled.div`
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-`
-
-const StyledDropdownItem = styled.div`
-    font-size: 2.5rem;
-    color: #fff;
-    padding: 1rem;
-    padding-right: 2rem;
-
-    &:hover {
-        background-color: #fff;
-        color: #000 !important;
-    }
-`
-
-const StyledHorizontalLine = styled.hr`
-    border: none;
-    border-top: 1px solid var(--color-grey-400);
-    margin: 0; 
+const open = keyframes`
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: none; }
 `;
 
-const Dropdown = ({onSelectCity, isCity, setIsCity, onOpenDropdown, backgroundColor}) => {
-    const dropdownRef = useRef(null);
+const Panel = styled.div`
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 10px;
+    z-index: 10;
+    width: min(280px, calc(100% - 20px));
+    max-height: 70dvh;
+    overflow-y: auto;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+    border-radius: 14px;
+    box-shadow: 0 18px 32px -12px rgba(0, 0, 0, 0.55);
+    animation: ${open} 0.16s ease-out;
+
+    @media (prefers-reduced-motion: reduce) { animation: none; }
+`;
+
+const Title = styled.p`
+    padding: 12px 18px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--soft);
+`;
+
+const List = styled.ul`
+    list-style: none;
+`;
+
+const Item = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 52px;
+    padding: 0 18px;
+    text-align: left;
+    font: inherit;
+    font-size: 19px;
+    color: inherit;
+    background: none;
+    border: 0;
+    border-top: 1px solid var(--rule);
+    cursor: pointer;
+
+    .pin { color: var(--soft); display: inline-flex; }
+    .name { flex: 1; }
+    .check { color: var(--red); display: inline-flex; }
+
+    &:hover,
+    &:focus-visible {
+        background: var(--ink);
+        color: var(--paper);
+        outline: none;
+    }
+    &:hover .pin, &:focus-visible .pin, &:hover .check, &:focus-visible .check { color: var(--paper); }
+
+    &[aria-selected="true"] { font-weight: 800; color: var(--red); }
+    &[aria-selected="true"]:hover,
+    &[aria-selected="true"]:focus-visible { color: var(--paper); }
+`;
+
+const Dropdown = ({onSelectCity, onOpenDropdown, current}) => {
+    const ref = useRef(null);
+
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        const close = (e) => {
+            if (e.type === 'keydown' ? e.key === 'Escape' : ref.current && !ref.current.contains(e.target)) {
                 onOpenDropdown();
             }
         };
-
-        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener('mousedown', close);
+        document.addEventListener('keydown', close);
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener('mousedown', close);
+            document.removeEventListener('keydown', close);
         };
-    }, [setIsCity]);
+    }, [onOpenDropdown]);
 
-    const handleCityClick = (city) => {
-        onSelectCity(city);
-        setIsCity(false);
-    };
-    const cities = [
-        {name: "Kumanovë"},
-        {name: "Tetovë"},
-        {name: "Strugë"},
-        {name: "Shkup"},
-        {name: "Gostivar"},
-        {name: "Prilep"},
-        {name: "Kërçovë"},
-        {name: "Dibër"},
-        {name: "Veles"},
-    ]
     return (
-        <StyledDropdown ref={dropdownRef} backgroundColor={backgroundColor}>
-            <StyledDropdownMenu>
-                {cities.map((city, index) => (
-                    <React.Fragment key={index}>
-                        <StyledDropdownItem onClick={() => handleCityClick(city.name)}>
-                            {city.name}
-                        </StyledDropdownItem>
-                        {index < cities.length - 1 &&
-                            <StyledHorizontalLine/>} {/* Render <hr/> if it's not the last item */}
-                    </React.Fragment>
+        <Panel ref={ref}>
+            <Title>Zgjidh qytetin</Title>
+            <List role="listbox" aria-label="Zgjidh qytetin">
+                {CITIES.map((name) => (
+                    <li key={name} role="presentation">
+                        <Item type="button" role="option" aria-selected={name === current}
+                              onClick={() => onSelectCity(name)}>
+                            <span className="pin"><PrayerIcon name="Pin" size={18}/></span>
+                            <span className="name">{name}</span>
+                            {name === current && <span className="check"><PrayerIcon name="Check" size={20}/></span>}
+                        </Item>
+                    </li>
                 ))}
-            </StyledDropdownMenu>
-        </StyledDropdown>
+            </List>
+        </Panel>
     );
 };
 

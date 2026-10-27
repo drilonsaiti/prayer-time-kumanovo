@@ -1,39 +1,20 @@
-import {useQuery} from "@tanstack/react-query";
-import {getPrayersTime} from "../service/apiPrayersTime.js";
+import {useMemo} from "react";
+import {calculateTimings} from "../utils/prayerCalc.js";
+import {skopjeDateParts} from "../utils/helpers.js";
 
-function getMillisecondsUntilAfterIsha() {
-    const now = new Date();
-    const tonight = new Date(now);
-
-    // Set to 11:59 PM today (after Isha is guaranteed to have passed)
-    tonight.setHours(23, 59, 0, 0);
-
-    const msUntilMidnight = tonight.getTime() - now.getTime();
-
-    // If it's already past 11:59 PM, cache until tomorrow's midnight
-    if (msUntilMidnight < 0) {
-        const tomorrow = new Date(now);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        tomorrow.setHours(23, 59, 0, 0);
-        return tomorrow.getTime() - now.getTime();
-    }
-
-    return msUntilMidnight;
-}
-
+// Times are calculated on the device, so there is nothing to load and nothing
+// that can fail offline. The Skopje date is part of the memo key, so a new day
+// (or the clock-change day) always gets fresh values.
 export function usePrayersTime(city) {
-    const {
-        isLoading,
-        data,
-        error,
-    } = useQuery({
-        queryKey: ["prayersTime", city],
-        queryFn: () => getPrayersTime(city),
-        staleTime: getMillisecondsUntilAfterIsha(), // Cache until midnight
-        cacheTime: getMillisecondsUntilAfterIsha() + 60000, // Keep in cache a bit longer
-        refetchOnWindowFocus: false, // Don't refetch on focus
-        refetchOnMount: false, // Don't refetch on mount if cache is valid
-    });
+    const {year, month, day} = skopjeDateParts();
 
-    return {isLoading, error, data};
+    return useMemo(() => {
+        try {
+            const timings = calculateTimings(city, {year, month, day}, new Date());
+            return {isLoading: false, error: null, data: [{timings}]};
+        } catch (error) {
+            console.error('Could not calculate prayer times:', error);
+            return {isLoading: false, error, data: null};
+        }
+    }, [city, year, month, day]);
 }

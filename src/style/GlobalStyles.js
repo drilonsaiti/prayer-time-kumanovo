@@ -3,6 +3,34 @@ import {createGlobalStyle} from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
 
+    /* ── Takvim theme tokens (light is the default; data-theme is set by theme-init.js) ── */
+    :root,
+    :root[data-theme='light'] {
+        color-scheme: light;
+        --wall: #cfc8b8;
+        --paper: #f3eee1;
+        --ink: #1f1b16;
+        --red: #b0251d;
+        --rule: #cdc4af;
+        --soft: #6e6555;
+    }
+
+    :root[data-theme='dark'] {
+        color-scheme: dark;
+        --wall: #0e1117;
+        --paper: #1c2331;
+        --ink: #efe6d0;
+        --red: #e5705a;
+        --rule: #38425a;
+        --soft: #a39c8a;
+    }
+
+    html,
+    body {
+        background: var(--wall);
+        -webkit-tap-highlight-color: transparent;
+    }
+
 
     :root {
 

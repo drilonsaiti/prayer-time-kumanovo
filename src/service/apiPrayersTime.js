@@ -1,12 +1,12 @@
 import {apiRequest} from "../utils/service.js";
 import {scrapePrayerTimes} from "./apiPrayersTimeScraper.js";
+import {skopjeDateString} from "../utils/helpers.js";
 
 export async function getPrayersTime(city) {
     try {
         const scrapedTimes = await scrapePrayerTimes(city);
 
-        const today = new Date();
-        const todayFormatted = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+        const todayFormatted = skopjeDateString();
 
         const fallbackDate = {
             gregorian: { date: todayFormatted },

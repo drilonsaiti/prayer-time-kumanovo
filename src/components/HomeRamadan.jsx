@@ -9,7 +9,8 @@ import {
     nextPrayer,
     nextPrayerIconColor,
     nextPrayerTime,
-    PRAYERS
+    PRAYERS,
+    skopjeMinutesOfDay
 } from "../utils/helpers.js";
 import Times from "./Times.jsx";
 import styled, { css, keyframes } from "styled-components";
@@ -327,14 +328,12 @@ const HomeRamadan = () => {
         const updateCountdown = () => {
             const newCountdown = calculateTimeDifference(data[0].timings);
             setTimeCountDown(newCountdown);
-
-            const now = new Date();
             const prayerTime = nextPrayer(data[0].timings);
             const prevPrayer = localStorage.getItem('prev');
 
             if (
                 newCountdown.includes("s") ||
-                (now.getHours() === 0 && now.getMinutes() <= 1) ||
+                skopjeMinutesOfDay() <= 1 ||
                 prevPrayer !== prayerTime
             ) {
                 window.location.reload();
