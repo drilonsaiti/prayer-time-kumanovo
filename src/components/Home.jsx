@@ -44,7 +44,7 @@ const Head = styled.header`
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    min-height: 56px;
+    min-height: 48px;
     padding: 6px 10px 6px 20px;
     background: var(--ink);
     color: var(--paper);
@@ -76,16 +76,16 @@ const HeadNote = styled.span`
 const CityButton = styled.button`
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    min-height: 44px;
-    padding: 0 12px 0 14px;
+    gap: 6px;
+    min-height: 34px;
+    padding: 0 10px 0 12px;
     background: transparent;
     border: 0;
     border-radius: 999px;
     box-shadow: inset 0 0 0 1.5px var(--paper);
     color: var(--paper);
     font: inherit;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.15s, color 0.15s;
@@ -444,9 +444,9 @@ const Home = () => {
                 <HeadNote>Kohët e namazit</HeadNote>
                 <CityButton type="button" onClick={toggleCity} aria-haspopup="listbox" aria-expanded={isCityOpen}
                             aria-label={`Qyteti: ${city}. Ndrysho qytetin`}>
-                    <PrayerIcon name="Pin" size={18}/>
+                    <PrayerIcon name="Pin" size={15}/>
                     {city}
-                    <span className="chev"><PrayerIcon name="Chevron" size={18}/></span>
+                    <span className="chev"><PrayerIcon name="Chevron" size={15}/></span>
                 </CityButton>
                 {/* inside Head, so the panel is positioned under the header, not under the whole card */}
                 {isCityOpen && <Dropdown current={city} onSelectCity={selectCity} onOpenDropdown={closeCity}/>}
