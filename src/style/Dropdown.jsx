@@ -14,13 +14,13 @@ const Panel = styled.div`
     top: calc(100% + 6px);
     right: 10px;
     z-index: 10;
-    width: min(280px, calc(100% - 20px));
-    max-height: 70dvh;
+    width: min(216px, calc(100% - 20px));
+    max-height: 60dvh;
     overflow-y: auto;
     background: var(--paper);
     color: var(--ink);
     border: 1.5px solid var(--ink);
-    border-radius: 14px;
+    border-radius: 12px;
     box-shadow: 0 18px 32px -12px rgba(0, 0, 0, 0.55);
     animation: ${open} 0.16s ease-out;
 
@@ -28,8 +28,8 @@ const Panel = styled.div`
 `;
 
 const Title = styled.p`
-    padding: 12px 18px 8px;
-    font-size: 12px;
+    padding: 7px 14px 5px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -43,13 +43,13 @@ const List = styled.ul`
 const Item = styled.button`
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
-    min-height: 52px;
-    padding: 0 18px;
+    min-height: 34px;
+    padding: 0 14px;
     text-align: left;
     font: inherit;
-    font-size: 19px;
+    font-size: 15px;
     color: inherit;
     background: none;
     border: 0;
@@ -121,9 +121,9 @@ const Dropdown = ({onSelectCity, onOpenDropdown, current}) => {
                     <li key={name} role="presentation">
                         <Item type="button" role="option" aria-selected={name === current}
                               onClick={() => onSelectCity(name)}>
-                            <span className="pin"><PrayerIcon name="Pin" size={18}/></span>
+                            <span className="pin"><PrayerIcon name="Pin" size={16}/></span>
                             <span className="name">{name}</span>
-                            {name === current && <span className="check"><PrayerIcon name="Check" size={20}/></span>}
+                            {name === current && <span className="check"><PrayerIcon name="Check" size={17}/></span>}
                         </Item>
                     </li>
                 ))}

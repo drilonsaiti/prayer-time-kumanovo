@@ -123,8 +123,9 @@ export const backgroundGradient = {
 // countdown are correct on the clock-change days and for visitors who are
 // in another timezone. Prayer times arrive as "HH:mm" strings (Skopje wall time).
 export const TIME_ZONE = 'Europe/Skopje';
-// Every moment of the day the countdown can point to, in order.
-const TIMINGS_TO_SHOW = ['Imsak', 'Fajr', 'Shuruq', 'Hyrja', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+// Only the five prayers (namaze) count for "Namazi i radhës" and the timer.
+// Imsaku, Lindja e Diellit and Hyrja e drekës are shown in the table but are not prayers.
+const TIMINGS_TO_SHOW = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
 const partsFormatter = new Intl.DateTimeFormat('en-GB', {
     timeZone: TIME_ZONE, year: 'numeric', month: '2-digit', day: '2-digit',

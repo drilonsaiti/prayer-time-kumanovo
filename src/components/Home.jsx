@@ -303,14 +303,14 @@ const ThemeSwitch = styled.div`
     button {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        min-height: 44px;
-        padding: 0 18px;
+        gap: 6px;
+        min-height: 34px;
+        padding: 0 14px;
         background: none;
         border: 0;
         color: var(--ink);
         font: inherit;
-        font-size: 15px;
+        font-size: 13px;
         font-style: normal;
         font-weight: 600;
         cursor: pointer;
@@ -464,10 +464,10 @@ const Home = () => {
         <Foot>
             <ThemeSwitch role="group" aria-label="Pamja: ditë ose natë">
                 <button type="button" aria-pressed={theme === 'light'} onClick={() => setTheme('light')}>
-                    <PrayerIcon name="Hyrja" size={18}/>Ditë
+                    <PrayerIcon name="Hyrja" size={15}/>Ditë
                 </button>
                 <button type="button" aria-pressed={theme === 'dark'} onClick={() => setTheme('dark')}>
-                    <PrayerIcon name="Imsak" size={18}/>Natë
+                    <PrayerIcon name="Imsak" size={15}/>Natë
                 </button>
             </ThemeSwitch>
             <span>
