@@ -9,7 +9,13 @@ const PATHS = {
     Check: <path d="m5 12.5 4.5 4.5L19 7.5"/>,
     // Imsaku: crescent
     Imsak: <path d="M19 14.2A7.6 7.6 0 1 1 9.8 5a6 6 0 0 0 9.2 9.2z"/>,
-    // Sabahu: sun rising, arrow up
+    // Sabahu (the prayer): sun rising with a solid half sun, arrow up
+    Sabahu: <>
+        <path d="M5 18.5h14"/>
+        <path d="M7.6 18.5a4.4 4.4 0 0 1 8.8 0" fill="currentColor"/>
+        <path d="M12 4.2v5.6M9.6 6.6 12 4.2l2.4 2.4"/>
+    </>,
+    // Hyrja e sabahut: the same, outlined
     Fajr: <>
         <path d="M5 18.5h14M7.6 18.5a4.4 4.4 0 0 1 8.8 0"/>
         <path d="M12 4.2v5.6M9.6 6.6 12 4.2l2.4 2.4"/>

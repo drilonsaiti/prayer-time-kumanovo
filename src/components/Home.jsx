@@ -369,7 +369,8 @@ const SELECTABLE = ["Kumanovë", "Tetovë", "Strugë", "Shkup", "Gostivar", "Pri
 
 const ROWS = [
     {key: 'Imsak', label: 'Imsaku', minor: true},
-    {key: 'Fajr', label: 'Sabahu'},
+    {key: 'Fajr', label: 'Hyrja e sabahut', minor: true},
+    {key: 'Sabahu', label: 'Sabahu'},
     {key: 'Shuruq', label: 'Lindja e Diellit', minor: true},
     {key: 'Hyrja', label: 'Hyrja e drekës', minor: true},
     {key: 'Dhuhr', label: 'Dreka'},

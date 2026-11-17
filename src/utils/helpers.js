@@ -70,7 +70,8 @@ export const PRAYERS = {
     'Imsak': 'Imsaku',
     'Shuruq': 'Lindja e Diellit',
     'Hyrja': 'Hyrja e drekës',
-    'Fajr': 'Sabahu',
+    'Sabahu': 'Sabahu',
+    'Fajr': 'Hyrja e sabahut',
     'Sunrise': 'Sabahu',
     'Dhuhr': 'Dreka',
     'Asr': 'Ikindia',
@@ -124,8 +125,8 @@ export const backgroundGradient = {
 // in another timezone. Prayer times arrive as "HH:mm" strings (Skopje wall time).
 export const TIME_ZONE = 'Europe/Skopje';
 // Only the five prayers (namaze) count for "Namazi i radhës" and the timer.
-// Imsaku, Lindja e Diellit and Hyrja e drekës are shown in the table but are not prayers.
-const TIMINGS_TO_SHOW = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+// Imsaku, Hyrja e sabahut, Lindja e Diellit and Hyrja e drekës are shown in the table but are not prayers.
+const TIMINGS_TO_SHOW = ['Sabahu', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
 
 const partsFormatter = new Intl.DateTimeFormat('en-GB', {
     timeZone: TIME_ZONE, year: 'numeric', month: '2-digit', day: '2-digit',

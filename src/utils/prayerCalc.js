@@ -27,6 +27,8 @@ const FAJR_ANGLE = 15;
 const ISHA_ANGLE = 18;
 const EXTRA_MINUTES = {sunrise: 1, dhuhr: 2, asr: 2, maghrib: 1};
 const IMSAK_MINUTES_BEFORE_FAJR = 20;
+// Sabahu is prayed 40 minutes before sunrise (the local practice). "Hyrja e sabahut" is when Fajr begins.
+const SABAHU_MINUTES_BEFORE_SUNRISE = 40;
 // Dreka is prayed at a fixed clock time in the Albanian community calendars:
 // 12:00 in winter time, 13:00 in summer time. "Hyrja e drekës" is when Dhuhr begins.
 const DREKA_WINTER = '12:00';
@@ -59,10 +61,12 @@ export function calculateTimings(city, dateParts, instant = new Date()) {
         params
     );
     const imsak = new Date(pt.fajr.getTime() - IMSAK_MINUTES_BEFORE_FAJR * 60000);
+    const sabahu = new Date(pt.sunrise.getTime() - SABAHU_MINUTES_BEFORE_SUNRISE * 60000);
 
     return {
         Imsak: hhmm(imsak),
-        Fajr: hhmm(pt.fajr),        // Sabahu
+        Fajr: hhmm(pt.fajr),        // Hyrja e sabahut (Fajr begins)
+        Sabahu: hhmm(sabahu),       // Sabahu (prayed 40 min before sunrise)
         Shuruq: hhmm(pt.sunrise),   // Lindja e diellit
         Hyrja: hhmm(pt.dhuhr),      // Hyrja e drekës (Dhuhr begins)
         // Dreka (fixed time). Use noon of that date to decide winter/summer time.
