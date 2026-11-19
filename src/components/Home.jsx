@@ -246,10 +246,19 @@ const Row = styled.li`
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 62px;
+    min-height: 66px;
     padding: 10px 2px;
     border-bottom: 1px solid var(--rule);
     color: ${(p) => (p.$state === 'next' ? 'var(--red)' : p.$state === 'done' ? 'var(--soft)' : 'var(--ink)')};
+
+    /* The next prayer is a highlighted card that reaches a little past the rules. */
+    ${(p) => p.$state === 'next' && `
+        margin: 0 -8px;
+        padding: 10px 10px;
+        background: var(--red-tint);
+        border-radius: 12px;
+        border-bottom-color: transparent;
+    `}
 
     .badge {
         position: relative;
@@ -269,7 +278,8 @@ const Row = styled.li`
         min-width: 0;
         display: flex;
         flex-direction: column;
-        gap: 2px;
+        align-items: flex-start;
+        gap: 3px;
     }
 
     .name {
@@ -278,26 +288,63 @@ const Row = styled.li`
         line-height: 1.15;
     }
 
-    /* small line under the name: when the time begins, Imsaku, sunrise */
-    .extras {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0 12px;
-        font-size: 13px;
-        font-style: italic;
+    /* When the time begins: one short chip, never wraps. */
+    .entry {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 5px;
+        padding: 1px 9px 2px;
+        border: 1px solid ${(p) => (p.$state === 'next' ? 'var(--red)' : 'var(--rule)')};
+        border-radius: 999px;
+        font-size: 12.5px;
+        line-height: 1.3;
         font-weight: 400;
-        color: var(--soft);
+        color: ${(p) => (p.$state === 'next' ? 'var(--red)' : 'var(--soft)')};
+        white-space: nowrap;
     }
-    .extras b {
-        font-style: normal;
+    .entry b {
         font-weight: 600;
         font-variant-numeric: lining-nums tabular-nums;
         color: ${(p) => (p.$state === 'next' ? 'var(--red)' : p.$state === 'done' ? 'var(--soft)' : 'var(--ink)')};
     }
 
     .time {
-        font-size: clamp(24px, 7vw, 28px);
+        font-size: clamp(25px, 7.4vw, 29px);
         font-weight: ${(p) => (p.$state === 'next' ? 800 : 700)};
+        font-variant-numeric: lining-nums tabular-nums;
+    }
+`;
+
+/* Not prayers: shown like the footer of a printed almanac, apart from the list. */
+const DayStrip = styled.dl`
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 16px 16px 0;
+    background: var(--tint);
+    border-radius: 12px;
+
+    > div {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 6px;
+        padding: 12px 6px 11px;
+        text-align: center;
+    }
+    > div + div { border-left: 1px solid var(--rule); }
+
+    dt {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        line-height: 1.25;
+        color: var(--soft);
+    }
+    dd {
+        margin: 0;
+        font-size: clamp(20px, 6vw, 23px);
+        font-weight: 700;
         font-variant-numeric: lining-nums tabular-nums;
     }
 `;
@@ -397,14 +444,26 @@ const CITY_BY_ENGLISH_NAME = {
 };
 const SELECTABLE = ["Kumanovë", "Tetovë", "Strugë", "Shkup", "Gostivar", "Prilep", "Kërçovë", "Dibër", "Veles"];
 
-// One row per prayer. "extras" are shown small under the name (they are not prayers).
+// One row per prayer. "entry" = the key of the time when that prayer's time begins.
 const ROWS = [
-    {key: 'Sabahu', label: 'Sabahu', extras: [['Imsaku', 'Imsak'], ['Hyrja', 'Fajr'], ['Lindja', 'Shuruq']]},
-    {key: 'Dhuhr', label: 'Dreka', extras: [['Hyrja', 'Hyrja']]},
+    {key: 'Sabahu', label: 'Sabahu', entry: 'Fajr'},
+    {key: 'Dhuhr', label: 'Dreka', entry: 'Hyrja'},
     {key: 'Asr', label: 'Ikindia'},
     {key: 'Maghrib', label: 'Akshami'},
     {key: 'Isha', label: 'Jacia'},
 ];
+
+const toMinutes = (t) => {
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+};
+
+// e.g. Lindja 05:54 -> Akshami 16:42 = "10:48"
+function dayLength(sunrise, sunset) {
+    if (!sunrise || !sunset) return null;
+    const d = toMinutes(sunset) - toMinutes(sunrise);
+    return d > 0 ? `${Math.floor(d / 60)}:${String(d % 60).padStart(2, '0')}` : null;
+}
 
 function useNow(intervalMs = 1000) {
     const [now, setNow] = useState(() => new Date());
@@ -558,12 +617,8 @@ const Home = () => {
                                 <span className="badge"><PrayerIcon name={r.key}/></span>
                                 <span className="main">
                                     <span className="name">{r.label}</span>
-                                    {r.extras && (
-                                        <span className="extras">
-                                            {r.extras.map(([label, k]) => timings[k] && (
-                                                <span key={k}>{label} <b>{timings[k]}</b></span>
-                                            ))}
-                                        </span>
+                                    {r.entry && timings[r.entry] && (
+                                        <span className="entry">Hyrja <b>{timings[r.entry]}</b></span>
                                     )}
                                 </span>
                                 <span className="time">{time}</span>
@@ -571,6 +626,16 @@ const Home = () => {
                         );
                     })}
                 </Times>
+
+                <DayStrip aria-label="Të tjera gjatë ditës">
+                    {[
+                        ['Imsaku', timings.Imsak],
+                        ['Lindja e Diellit', timings.Shuruq],
+                        ['Gjatësia e ditës', dayLength(timings.Shuruq, timings.Maghrib)],
+                    ].filter(([, value]) => value).map(([label, value]) => (
+                        <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
+                    ))}
+                </DayStrip>
 
                 {footer}
                 <SrOnly aria-live="polite">{`${PRAYERS[next.key]} hyn në ${timings[next.key]}`}</SrOnly>

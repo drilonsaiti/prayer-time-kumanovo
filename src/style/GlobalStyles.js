@@ -13,6 +13,8 @@ const GlobalStyles = createGlobalStyle`
         --red: #b0251d;
         --rule: #cdc4af;
         --soft: #6e6555;
+        --tint: rgba(31, 27, 22, 0.05);
+        --red-tint: rgba(176, 37, 29, 0.08);
     }
 
     :root[data-theme='dark'] {
@@ -23,6 +25,8 @@ const GlobalStyles = createGlobalStyle`
         --red: #e5705a;
         --rule: #38425a;
         --soft: #a39c8a;
+        --tint: rgba(239, 230, 208, 0.06);
+        --red-tint: rgba(229, 112, 90, 0.15);
     }
 
     html,
