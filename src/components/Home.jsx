@@ -128,6 +128,15 @@ const NextName = styled.div`
     color: var(--ink);
 
     svg { color: var(--red); flex: none; }
+
+    .at {
+        margin-left: auto;
+        font-size: 16px;
+        font-style: italic;
+        font-weight: 400;
+        color: var(--soft);
+        font-variant-numeric: lining-nums tabular-nums;
+    }
 `;
 
 const pulse = keyframes`
@@ -237,8 +246,8 @@ const Row = styled.li`
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: ${(p) => (p.$minor ? '46px' : '58px')};
-    padding: ${(p) => (p.$minor ? '4px 2px' : '8px 2px')};
+    min-height: 62px;
+    padding: 10px 2px;
     border-bottom: 1px solid var(--rule);
     color: ${(p) => (p.$state === 'next' ? 'var(--red)' : p.$state === 'done' ? 'var(--soft)' : 'var(--ink)')};
 
@@ -253,21 +262,42 @@ const Row = styled.li`
         background: var(--paper);
         border: 1.5px solid ${(p) => (p.$state === 'next' ? 'var(--red)' : 'var(--rule)')};
         ${(p) => p.$state === 'next' && 'background: var(--red); color: var(--paper);'}
-        ${(p) => p.$minor && 'transform: scale(0.82);'}
+    }
+
+    .main {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
     }
 
     .name {
-        flex: 1;
-        min-width: 0;
-        font-size: ${(p) => (p.$minor ? 'clamp(14px, 4.2vw, 16px)' : 'clamp(18px, 5.4vw, 21px)')};
-        font-style: ${(p) => (p.$minor ? 'italic' : 'normal')};
-        font-weight: ${(p) => (p.$state === 'next' ? 800 : p.$minor ? 400 : 600)};
-        ${(p) => p.$minor && p.$state !== 'next' && 'color: var(--soft);'}
+        font-size: clamp(19px, 5.6vw, 22px);
+        font-weight: ${(p) => (p.$state === 'next' ? 800 : 600)};
+        line-height: 1.15;
+    }
+
+    /* small line under the name: when the time begins, Imsaku, sunrise */
+    .extras {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 12px;
+        font-size: 13px;
+        font-style: italic;
+        font-weight: 400;
+        color: var(--soft);
+    }
+    .extras b {
+        font-style: normal;
+        font-weight: 600;
+        font-variant-numeric: lining-nums tabular-nums;
+        color: ${(p) => (p.$state === 'next' ? 'var(--red)' : p.$state === 'done' ? 'var(--soft)' : 'var(--ink)')};
     }
 
     .time {
-        font-size: ${(p) => (p.$minor ? 'clamp(16px, 4.8vw, 18px)' : 'clamp(22px, 6.6vw, 26px)')};
-        font-weight: ${(p) => (p.$state === 'next' ? 800 : p.$minor ? 500 : 700)};
+        font-size: clamp(24px, 7vw, 28px);
+        font-weight: ${(p) => (p.$state === 'next' ? 800 : 700)};
         font-variant-numeric: lining-nums tabular-nums;
     }
 `;
@@ -367,13 +397,10 @@ const CITY_BY_ENGLISH_NAME = {
 };
 const SELECTABLE = ["Kumanovë", "Tetovë", "Strugë", "Shkup", "Gostivar", "Prilep", "Kërçovë", "Dibër", "Veles"];
 
+// One row per prayer. "extras" are shown small under the name (they are not prayers).
 const ROWS = [
-    {key: 'Imsak', label: 'Imsaku', minor: true},
-    {key: 'Fajr', label: 'Hyrja e sabahut', minor: true},
-    {key: 'Sabahu', label: 'Sabahu'},
-    {key: 'Shuruq', label: 'Lindja e Diellit', minor: true},
-    {key: 'Hyrja', label: 'Hyrja e drekës', minor: true},
-    {key: 'Dhuhr', label: 'Dreka'},
+    {key: 'Sabahu', label: 'Sabahu', extras: [['Imsaku', 'Imsak'], ['Hyrja', 'Fajr'], ['Lindja', 'Shuruq']]},
+    {key: 'Dhuhr', label: 'Dreka', extras: [['Hyrja', 'Hyrja']]},
     {key: 'Asr', label: 'Ikindia'},
     {key: 'Maghrib', label: 'Akshami'},
     {key: 'Isha', label: 'Jacia'},
@@ -502,7 +529,7 @@ const Home = () => {
                 {header}
                 <Hero>
                     <NextLabel>Namazi i radhës:</NextLabel>
-                    <NextName><PrayerIcon name={next.key} size={30}/>{PRAYERS[next.key]}</NextName>
+                    <NextName><PrayerIcon name={next.key} size={30}/>{PRAYERS[next.key]}<span className="at">në {timings[next.key]}</span></NextName>
                     <Timer role="timer" aria-label={`${countdown.left} ${countdown.right} ${countdown.unit}`}>
                         {countdown.left}<span className="colon" aria-hidden="true">:</span>{countdown.right}
                     </Timer>
@@ -522,15 +549,23 @@ const Home = () => {
                 </Hero>
 
                 <Times>
-                    {ROWS.filter((r) => timings[r.key]).map((r) => {
+                    {ROWS.map((r) => {
                         const time = timings[r.key];
                         const isNext = r.key === next.key;
                         const state = isNext ? 'next' : hasPassed(time, now) ? 'done' : 'todo';
                         return (
-                            <Row key={r.key} $minor={r.minor} $state={state}
-                                 aria-current={isNext ? 'true' : undefined}>
+                            <Row key={r.key} $state={state} aria-current={isNext ? 'true' : undefined}>
                                 <span className="badge"><PrayerIcon name={r.key}/></span>
-                                <span className="name">{r.label}</span>
+                                <span className="main">
+                                    <span className="name">{r.label}</span>
+                                    {r.extras && (
+                                        <span className="extras">
+                                            {r.extras.map(([label, k]) => timings[k] && (
+                                                <span key={k}>{label} <b>{timings[k]}</b></span>
+                                            ))}
+                                        </span>
+                                    )}
+                                </span>
                                 <span className="time">{time}</span>
                             </Row>
                         );
