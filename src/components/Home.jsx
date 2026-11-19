@@ -246,19 +246,10 @@ const Row = styled.li`
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 66px;
-    padding: 10px 2px;
+    min-height: ${(p) => (p.$slim ? '44px' : '66px')};
+    padding: ${(p) => (p.$slim ? '6px 2px' : '10px 2px')};
     border-bottom: 1px solid var(--rule);
     color: ${(p) => (p.$state === 'next' ? 'var(--red)' : p.$state === 'done' ? 'var(--soft)' : 'var(--ink)')};
-
-    /* The next prayer is a highlighted card that reaches a little past the rules. */
-    ${(p) => p.$state === 'next' && `
-        margin: 0 -8px;
-        padding: 10px 10px;
-        background: var(--red-tint);
-        border-radius: 12px;
-        border-bottom-color: transparent;
-    `}
 
     .badge {
         position: relative;
@@ -273,6 +264,21 @@ const Row = styled.li`
         ${(p) => p.$state === 'next' && 'background: var(--red); color: var(--paper);'}
     }
 
+    /* Imsaku / Lindja: a small node on the timeline, not a prayer */
+    .node {
+        flex: none;
+        display: grid;
+        place-items: center;
+        width: var(--badge);
+    }
+    .node i {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: ${(p) => (p.$state === 'done' ? 'var(--rule)' : 'var(--paper)')};
+        border: 1.5px solid var(--rule);
+    }
+
     .main {
         flex: 1;
         min-width: 0;
@@ -283,9 +289,10 @@ const Row = styled.li`
     }
 
     .name {
-        font-size: clamp(19px, 5.6vw, 22px);
-        font-weight: ${(p) => (p.$state === 'next' ? 800 : 600)};
+        font-size: ${(p) => (p.$slim ? '16px' : 'clamp(19px, 5.6vw, 22px)')};
+        font-weight: ${(p) => (p.$state === 'next' ? 800 : p.$slim ? 400 : 600)};
         line-height: 1.15;
+        ${(p) => p.$slim && 'color: var(--soft);'}
     }
 
     /* When the time begins: one short chip, never wraps. */
@@ -309,43 +316,10 @@ const Row = styled.li`
     }
 
     .time {
-        font-size: clamp(25px, 7.4vw, 29px);
-        font-weight: ${(p) => (p.$state === 'next' ? 800 : 700)};
+        font-size: ${(p) => (p.$slim ? '18px' : 'clamp(25px, 7.4vw, 29px)')};
+        font-weight: ${(p) => (p.$state === 'next' ? 800 : p.$slim ? 500 : 700)};
         font-variant-numeric: lining-nums tabular-nums;
-    }
-`;
-
-/* Not prayers: shown like the footer of a printed almanac, apart from the list. */
-const DayStrip = styled.dl`
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    margin: 16px 16px 0;
-    background: var(--tint);
-    border-radius: 12px;
-
-    > div {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 6px;
-        padding: 12px 6px 11px;
-        text-align: center;
-    }
-    > div + div { border-left: 1px solid var(--rule); }
-
-    dt {
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        line-height: 1.25;
-        color: var(--soft);
-    }
-    dd {
-        margin: 0;
-        font-size: clamp(20px, 6vw, 23px);
-        font-weight: 700;
-        font-variant-numeric: lining-nums tabular-nums;
+        ${(p) => p.$slim && 'color: var(--soft);'}
     }
 `;
 
@@ -444,26 +418,17 @@ const CITY_BY_ENGLISH_NAME = {
 };
 const SELECTABLE = ["Kumanovë", "Tetovë", "Strugë", "Shkup", "Gostivar", "Prilep", "Kërçovë", "Dibër", "Veles"];
 
-// One row per prayer. "entry" = the key of the time when that prayer's time begins.
+// The whole day, in time order. Prayers are big rows; Imsaku and Lindja e Diellit
+// are slim rows (not prayers, never "next"). "entry" = when that prayer's time begins.
 const ROWS = [
+    {key: 'Imsak', label: 'Imsaku', slim: true},
     {key: 'Sabahu', label: 'Sabahu', entry: 'Fajr'},
+    {key: 'Shuruq', label: 'Lindja e Diellit', slim: true},
     {key: 'Dhuhr', label: 'Dreka', entry: 'Hyrja'},
     {key: 'Asr', label: 'Ikindia'},
     {key: 'Maghrib', label: 'Akshami'},
     {key: 'Isha', label: 'Jacia'},
 ];
-
-const toMinutes = (t) => {
-    const [h, m] = t.split(':').map(Number);
-    return h * 60 + m;
-};
-
-// e.g. Lindja 05:54 -> Akshami 16:42 = "10:48"
-function dayLength(sunrise, sunset) {
-    if (!sunrise || !sunset) return null;
-    const d = toMinutes(sunset) - toMinutes(sunrise);
-    return d > 0 ? `${Math.floor(d / 60)}:${String(d % 60).padStart(2, '0')}` : null;
-}
 
 function useNow(intervalMs = 1000) {
     const [now, setNow] = useState(() => new Date());
@@ -608,13 +573,15 @@ const Home = () => {
                 </Hero>
 
                 <Times>
-                    {ROWS.map((r) => {
+                    {ROWS.filter((r) => timings[r.key]).map((r) => {
                         const time = timings[r.key];
                         const isNext = r.key === next.key;
                         const state = isNext ? 'next' : hasPassed(time, now) ? 'done' : 'todo';
                         return (
-                            <Row key={r.key} $state={state} aria-current={isNext ? 'true' : undefined}>
-                                <span className="badge"><PrayerIcon name={r.key}/></span>
+                            <Row key={r.key} $state={state} $slim={r.slim} aria-current={isNext ? 'true' : undefined}>
+                                {r.slim
+                                    ? <span className="node" aria-hidden="true"><i/></span>
+                                    : <span className="badge"><PrayerIcon name={r.key}/></span>}
                                 <span className="main">
                                     <span className="name">{r.label}</span>
                                     {r.entry && timings[r.entry] && (
@@ -626,16 +593,6 @@ const Home = () => {
                         );
                     })}
                 </Times>
-
-                <DayStrip aria-label="Të tjera gjatë ditës">
-                    {[
-                        ['Imsaku', timings.Imsak],
-                        ['Lindja e Diellit', timings.Shuruq],
-                        ['Gjatësia e ditës', dayLength(timings.Shuruq, timings.Maghrib)],
-                    ].filter(([, value]) => value).map(([label, value]) => (
-                        <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
-                    ))}
-                </DayStrip>
 
                 {footer}
                 <SrOnly aria-live="polite">{`${PRAYERS[next.key]} hyn në ${timings[next.key]}`}</SrOnly>
